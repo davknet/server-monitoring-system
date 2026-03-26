@@ -14,12 +14,14 @@ return new class extends Migration
         Schema::create('protocols', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+             $table->string('protocol')->unique(); // e.g. http, ftp
             $table->text('description')->nullable(); // Details / explanation
             $table->string('type')->nullable();     // e.g. http, ftp, medical, internal
             $table->string('version')->nullable();  // e.g. v1, v2
             $table->boolean('is_active')->default(true); // status
-            $table->json('config')->nullable();     
-            $table->foreignId('user_id')->nullable()->constrained()->nullOnDelete()->$table->timestamps();
+            $table->json('config')->nullable();
+            $table->foreignId('user_id')->nullable()->constrained()->nullOnDelete();
+            $table->timestamps();
         });
     }
 
