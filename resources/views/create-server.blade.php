@@ -48,17 +48,21 @@
         </select>
     </div>
 
-        <div class="mb-4">
-            <label for="method_id" class="block font-semibold mb-1">HTTP Method</label>
-            <select name="method_id" id="method_id" class="w-full border border-gray-300 p-2 rounded" required>
-                <option value="">Select method</option>
-                @foreach($methods as $method)
-                    <option value="{{ $method->id }}" {{ old('method_id') == $method->id ? 'selected' : '' }}>
-                        {{ $method->name }}
-                    </option>
-                @endforeach
-            </select>
-        </div>
+
+    <div class="mb-4">
+        <label for="method" class="block font-semibold mb-1">HTTP Method</label>
+        <select name="method" id="method" class="w-full border border-gray-300 p-2 rounded" required>
+            <option value="">Select Method</option>
+            @foreach($methods as $method)
+                <option value="{{ $method->name }}" {{ old('method') == $method->name ? 'selected' : '' }}>
+                    {{ $method->name }}
+                </option>
+            @endforeach
+        </select>
+
+
+
+
 
     <div class="mb-4">
         <label for="description" class="block font-semibold mb-1">Description</label>
