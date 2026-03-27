@@ -1,0 +1,156 @@
+:root {
+    --main-font-color: #fff;
+    --main-bg-color: #376aeb;
+}
+
+/* Brand */
+header .brand {
+    font-weight: bold;
+    font-family: Arial, Helvetica, sans-serif;
+    display: flex;
+    align-items: center;
+    width: 15%;
+}
+
+header .brand a {
+    text-decoration: none;
+    color: var(--main-font-color);
+    font-size: 1.65rem;
+}
+
+/* Main navigation */
+nav.main-nav {
+    width: 85%;
+    padding: 0 3%;
+    height: 50px;
+    display: flex;
+    justify-content: space-between;
+    position: relative;
+}
+
+nav.main-nav ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+/* Left links */
+nav .main-unordered-list {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+nav .main-unordered-list li a {
+    color: var(--main-font-color);
+    text-decoration: none;
+    font-size: 14px;
+    white-space: nowrap;
+}
+
+
+.dropdown {
+    position: relative;
+}
+
+.large-dropdown-list-box {
+    position: absolute;
+    top: 55px;
+    left: 0;
+    min-width: 520px;
+    background-color: var(--main-bg-color);
+    padding: 20px;
+    border-radius: 10px;
+    z-index: 999;
+}
+
+/* Right links */
+.main-small-unordered-list {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.logout-btn {
+    background: none;
+    border: none;
+    color: var(--main-font-color);
+    cursor: pointer;
+    font-size: 14px;
+    padding: 0;
+}
+
+/* Hamburger menu */
+.humburger-icon {
+    display: none;
+    cursor: pointer;
+    width: 35px;
+    height: 35px;
+    padding: 5px;
+}
+
+.humburger-icon div {
+    width: 35px;
+    height: 3px;
+    background-color: var(--main-font-color);
+    margin: 6px 0;
+    transition: 0.4s;
+}
+
+.humburger-icon.open .bar1 {
+    transform: rotate(-45deg) translate(-6px, 6px);
+}
+
+.humburger-icon.open .bar2 {
+    opacity: 0;
+}
+
+.humburger-icon.open .bar3 {
+    transform: rotate(45deg) translate(-6px, -8px);
+}
+
+.humburger-icon ul.mobile-menu {
+    display: none;
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 60%;
+    height: 100vh;
+    background-color: var(--main-bg-color);
+    padding: 20px;
+    overflow-y: auto;
+}
+
+.humburger-icon.open ul.mobile-menu {
+    display: block;
+}
+
+.humburger-icon ul.mobile-menu h3 {
+    color: var(--main-font-color);
+    font-size: 1.65rem;
+}
+
+.humburger-icon ul.mobile-menu li {
+    margin-top: 15px;
+}
+
+.humburger-icon ul.mobile-menu li a,
+.humburger-icon ul.mobile-menu button.logout-btn {
+    color: #fff;
+    text-decoration: none;
+}
+
+/* Responsive */
+@media only screen and (max-width: 1000px) {
+    nav.main-nav {
+        display: none;
+    }
+
+    .humburger-icon {
+        display: block;
+    }
+
+    header .brand {
+        width: 80%;
+    }
+}

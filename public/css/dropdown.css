@@ -1,0 +1,114 @@
+/* =========================
+   Dropdown Menu Styling
+========================= */
+
+/* Grid container for dropdown columns */
+.large-dropdown-list-box > ul {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+/* Column wrapper */
+.drop-boxes {
+    list-style: none;
+}
+
+/* Column title */
+.drop-boxes p {
+    font-weight: bold;
+    border-bottom: 1px solid #fff;
+    margin-bottom: 10px;
+    padding-bottom: 5px;
+    font-size: 15px;
+    color: #fff;
+}
+
+/* Inner list in column */
+.drop-boxes ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+/* List items */
+.drop-boxes ul li {
+    margin-top: 6px;
+}
+
+/* Links inside dropdown */
+.drop-boxes ul li a {
+    color: #fff;
+    text-decoration: none;
+    font-size: 14px;
+    display: block;
+    padding: 4px 0;
+    transition: 0.2s;
+}
+
+/* Hover effect for links */
+.drop-boxes ul li a:hover {
+    padding-left: 6px;
+    text-decoration: underline;
+}
+
+/* 🔥 Dropdown hidden by default */
+.large-dropdown-list-box {
+    display: block; /* keep block for positioning */
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    position: absolute;
+    top: 50px;
+    left: 0;
+    background-color: var(--main-bg-color, #376aeb);
+    padding: 15px;
+    border-radius: 5px;
+    transform: translateY(10px);
+    transition: all 0.25s ease;
+    z-index: 999; /* always on top */
+}
+
+/* Dropdown visible when active */
+.large-dropdown-list-box.active {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transform: translateY(0);
+}
+
+/* Make dropdown columns flexible */
+.large-dropdown-list-box ul {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 20px;
+}
+
+/* Mobile adjustments */
+@media only screen and (max-width: 1000px) {
+    .large-dropdown-list-box {
+        position: relative;
+        top: 0;
+        transform: none;
+        padding: 10px 0;
+        border-radius: 0;
+        width: 100%;
+    }
+
+    .large-dropdown-list-box ul {
+        display: block;
+    }
+
+    .drop-boxes p {
+        font-size: 16px;
+        padding: 10px 20px 5px;
+        border-bottom: 1px solid rgba(255,255,255,0.3);
+    }
+
+    .drop-boxes ul li a {
+        padding: 8px 20px;
+    }
+}

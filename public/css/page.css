@@ -1,0 +1,420 @@
+/* =========================
+   Global Reset & Variables
+========================= */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --main-background-color: #87c0d6;
+    --main-font-color: #fff;
+    --main-bg-color: #376aeb;
+    --wrapper-max-width: 1960px;
+}
+
+/* =========================
+   Base HTML & Body
+========================= */
+html, body {
+    max-width: 100%;
+    overflow-x: hidden;
+    background-color: hsla(197, 83%, 71%, 0.515);
+    font-family: Arial, sans-serif;
+}
+
+/* =========================
+   Header
+========================= */
+header {
+    margin: 0;
+    padding: 0 20px;
+    width: 100%;
+    height: 60px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: hsla(223, 82%, 57%, 0.872);
+    z-index: 10;
+    position: relative;
+}
+
+/* Brand */
+header .brand {
+    font-weight: bold;
+    font-family: Arial, Helvetica, sans-serif;
+    display: flex;
+    align-items: center;
+    width: 15%;
+}
+
+header .brand a {
+    text-decoration: none;
+    color: var(--main-font-color);
+    font-size: 1.65rem;
+}
+
+/* =========================
+   Main Navigation
+========================= */
+nav.main-nav {
+    width: 85%;
+    padding: 0 3%;
+    height: 50px;
+    display: flex;
+    justify-content: space-between;
+    position: relative;
+}
+
+nav.main-nav ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+/* Left links */
+nav .main-unordered-list {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+nav .main-unordered-list li a {
+    color: var(--main-font-color);
+    text-decoration: none;
+    font-size: 14px;
+    white-space: nowrap;
+}
+
+/* Right links */
+.main-small-unordered-list {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.logout-btn {
+    background: none;
+    border: none;
+    color: var(--main-font-color);
+    cursor: pointer;
+    font-size: 14px;
+    padding: 0;
+}
+
+/* =========================
+   Dropdown Menu
+========================= */
+.dropdown {
+    position: relative;
+}
+
+.large-dropdown-list-box {
+    display: block;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    position: absolute;
+    top: 55px;
+    left: 0;
+    min-width: 520px;
+    background-color: var(--main-bg-color);
+    padding: 20px;
+    border-radius: 10px;
+    transform: translateY(10px);
+    transition: all 0.25s ease;
+    z-index: 999;
+}
+
+.large-dropdown-list-box.active {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transform: translateY(0);
+}
+
+/* Dropdown Columns */
+.large-dropdown-list-box > ul {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+.drop-boxes {
+    list-style: none;
+}
+
+.drop-boxes p {
+    font-weight: bold;
+    border-bottom: 1px solid #fff;
+    margin-bottom: 10px;
+    padding-bottom: 5px;
+    font-size: 15px;
+    color: #fff;
+}
+
+.drop-boxes ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.drop-boxes ul li {
+    margin-top: 6px;
+}
+
+.drop-boxes ul li a {
+    color: #fff;
+    text-decoration: none;
+    font-size: 14px;
+    display: block;
+    padding: 4px 0;
+    transition: 0.2s;
+}
+
+.drop-boxes ul li a:hover {
+    padding-left: 6px;
+    text-decoration: underline;
+}
+
+/* =========================
+   Hamburger Menu (Mobile)
+========================= */
+.humburger-icon {
+    display: none;
+    cursor: pointer;
+    width: 35px;
+    height: 35px;
+    padding: 5px;
+    position: relative;
+    z-index: 1000;
+}
+
+.humburger-icon div {
+    width: 35px;
+    height: 3px;
+    background-color: var(--main-font-color);
+    margin: 6px 0;
+    transition: 0.4s;
+}
+
+.humburger-icon.open .bar1 {
+    transform: rotate(-45deg) translate(-6px, 6px);
+}
+
+.humburger-icon.open .bar2 {
+    opacity: 0;
+}
+
+.humburger-icon.open .bar3 {
+    transform: rotate(45deg) translate(-6px, -8px);
+}
+
+/* Mobile Menu */
+.humburger-icon ul.mobile-menu {
+    display: none;
+    position: absolute;
+    left: 0;
+    top: 60px;
+    width: 80%;
+    height: calc(100vh - 60px);
+    background-color: var(--main-bg-color);
+    padding: 20px;
+    overflow-y: auto;
+    flex-direction: column;
+}
+
+.humburger-icon.open ul.mobile-menu {
+    display: flex;
+    flex-direction: column;
+}
+
+.humburger-icon ul.mobile-menu h3 {
+    color: var(--main-font-color);
+    font-size: 1.65rem;
+    margin-bottom: 10px;
+}
+
+.humburger-icon ul.mobile-menu li {
+    margin-top: 10px;
+}
+
+.humburger-icon ul.mobile-menu li a,
+.humburger-icon ul.mobile-menu button.logout-btn {
+    color: #fff;
+    text-decoration: none;
+    font-size: 14px;
+}
+
+/* Mobile Dropdown in Hamburger */
+.dropdown-mobile .large-dropdown-list-box-mobile {
+    display: none;
+    flex-direction: column;
+    margin-left: 10px;
+}
+
+.dropdown-mobile.active .large-dropdown-list-box-mobile {
+    display: flex;
+}
+
+/* Hamburger menu */
+.humburger-icon {
+    display: none;
+    cursor: pointer;
+    width: 35px;
+    height: 35px;
+    position: relative; /* for absolute positioning of menu */
+    z-index: 1000;
+}
+
+.humburger-icon div {
+    width: 35px;
+    height: 3px;
+    background-color: var(--main-font-color);
+    margin: 6px 0;
+    transition: 0.4s;
+}
+
+.humburger-icon.open .bar1 {
+    transform: rotate(-45deg) translate(-6px, 6px);
+}
+
+.humburger-icon.open .bar2 {
+    opacity: 0;
+}
+
+.humburger-icon.open .bar3 {
+    transform: rotate(45deg) translate(-6px, -8px);
+}
+
+/* Mobile menu styling */
+.humburger-icon ul.mobile-menu {
+    display: none;
+    position: fixed; /* changed from absolute to fixed */
+    top: 0;
+    left: 0; /* always start from left */
+    width: 250px; /* wider menu */
+    height: 100vh;
+    background-color: var(--main-bg-color);
+    padding: 20px;
+    overflow-y: auto;
+    box-shadow: 2px 0 12px rgba(0,0,0,0.4);
+    transition: transform 0.3s ease;
+    transform: translateX(-100%); /* hidden by default */
+    z-index: 9999;
+}
+
+.humburger-icon.open ul.mobile-menu {
+    display: block;
+    transform: translateX(0); /* slide in */
+}
+
+.humburger-icon ul.mobile-menu h3 {
+    color: var(--main-font-color);
+    font-size: 1.65rem;
+}
+
+.humburger-icon ul.mobile-menu li {
+    margin-top: 15px;
+}
+
+.humburger-icon ul.mobile-menu li a,
+.humburger-icon ul.mobile-menu button.logout-btn {
+    color: #fff;
+    text-decoration: none;
+    font-size: 16px;
+    display: block;
+    padding: 8px 0;
+}
+
+/* Responsive */
+@media only screen and (max-width: 1000px) {
+    nav.main-nav {
+        display: none;
+    }
+
+    .humburger-icon {
+        display: block;
+    }
+
+    header .brand {
+        width: 80%;
+    }
+}
+/* =========================
+   Wrapper, Main, and Sidebars
+========================= */
+div.wrapper {
+    width: 100%;
+    min-height: 860px;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+div.wrapper main.main-content {
+    margin: 0;
+    padding: 0;
+    width: 70%;
+    max-width: var(--wrapper-max-width);
+    border: 1px solid hsl(0, 0%, 12%);
+    min-height: 860px;
+    background-color: var(--main-background-color);
+}
+
+div.wrapper aside.sidebar {
+    margin: 0;
+    padding: 0;
+    width: 15%;
+    min-height: 860px;
+}
+
+div.wrapper aside.left-sidebar {
+    background-color: hsla(271, 54%, 47%, 0.636);
+}
+
+div.wrapper aside.right-sidebar {
+    background-color: hsla(158, 54%, 47%, 0.636);
+}
+
+/* =========================
+   Responsive
+========================= */
+@media only screen and (max-width: 1000px) {
+    nav.main-nav {
+        display: none;
+    }
+
+    .humburger-icon {
+        display: block;
+    }
+
+    header .brand {
+        width: 80%;
+    }
+
+    /* Mobile Dropdown Adjustments */
+    .large-dropdown-list-box {
+        position: relative;
+        top: 0;
+        left: 0;
+        transform: none;
+        min-width: 100%;
+        padding: 10px 0;
+        border-radius: 0;
+    }
+
+    .large-dropdown-list-box ul {
+        display: block;
+    }
+
+    .drop-boxes p {
+        font-size: 16px;
+        padding: 10px 20px 5px;
+        border-bottom: 1px solid rgba(255,255,255,0.3);
+    }
+
+    .drop-boxes ul li a {
+        padding: 8px 20px;
+    }
+}
