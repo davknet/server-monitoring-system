@@ -19,8 +19,8 @@ return new class extends Migration
             $table->string('method', 10 );
             $table->json('config')->nullable(); // e.g. headers, auth details, etc.
             $table->foreignId('user_id')->nullable()->constrained()->nullOnDelete();
+            $table->text('description')->nullable();
             $table->timestamps();
-            
         });
     }
 
