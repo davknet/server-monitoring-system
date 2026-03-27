@@ -16,12 +16,12 @@ return new class extends Migration
             $table->string('name');
             $table->string('url');
             $table->foreignId('protocol_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('status_id')->constrained()->cascadeOnDelete();
-            $table->text('description')->nullable();
+            $table->foreignId('method', 10 )->default('GET');
+            $table->string('method', 10)->default('GET');
             $table->json('config')->nullable(); // e.g. headers, auth details, etc.
             $table->foreignId('user_id')->nullable()->constrained()->nullOnDelete();
             $table->timestamps();
-        
+
 
         });
     }
