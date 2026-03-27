@@ -18,7 +18,7 @@ class ServerWebController extends Controller
             'name' => 'required|string|max:255',
             'url' => 'required|url|max:255',
             'protocol_id' => 'required|exists:protocols,id',
-            'method_id' => 'required|exists:methods,id',
+            'method' => 'required|exists:methods,name',
             'description' => 'nullable|string',
             'config' => 'nullable|json',
             'user_id' => 'nullable|exists:users,id',
