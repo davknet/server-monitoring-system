@@ -14,5 +14,12 @@ class Status extends Model
         'is_active'
     ];
 
-    
+
+
+    public function servers()
+    {
+        return $this->hasMany(Server::class);
+    }
+
+
 }
