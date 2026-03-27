@@ -25,4 +25,15 @@ class Protocol extends Model
 
 
 
+    public function servers()
+    {
+        return $this->hasMany(Server::class);
+    }
+
+     public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+
 }
