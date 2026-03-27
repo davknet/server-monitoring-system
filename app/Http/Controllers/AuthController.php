@@ -7,11 +7,13 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
+
 class AuthController extends Controller
 {
     // Show login form
      public function showLogin()
     {
+
         return view('auth.login');
     }
 
@@ -20,9 +22,6 @@ class AuthController extends Controller
    public function login(LoginRequest $request)
 {
 
-// Log::info('Login attempt for email: ' . $request->input('email'));
-// Log::info('Login attempt for password: ' . $request->input('password'));
-// Log::info('Login attempt with validated data: ' . json_encode($request->validated()));
 
 
 
@@ -50,11 +49,10 @@ class AuthController extends Controller
     public function logout(Request $request)
     {
         Auth::logout();
-
         $request->session()->invalidate();
         $request->session()->regenerateToken();
-
         return redirect('/');
+
     }
 
 
