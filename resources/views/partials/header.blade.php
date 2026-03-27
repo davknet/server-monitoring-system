@@ -81,7 +81,7 @@
                         <li class="drop-boxes">
                             <p>Servers</p>
                             <ul>
-                                <li><a href="#">Add Server</a></li>
+                                <li><a href="{{ route('create-server') }}">Add Server</a></li>
                                 <li><a href="#">Update Server</a></li>
                                 <li><a href="#">Delete Server</a></li>
                             </ul>
