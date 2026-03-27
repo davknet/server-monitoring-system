@@ -26,6 +26,7 @@ class DatabaseSeeder extends Seeder
      $this->call([
            ProtocolSeeder::class,
            HealthStratus::class,
+           MethodsTableSeeder::class,
         ]);
     }
 
