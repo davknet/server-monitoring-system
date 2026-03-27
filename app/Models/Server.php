@@ -13,7 +13,7 @@ class Server extends Model
         'name',
         'url',
         'protocol_id',
-        'status_id',
+        'method',
         'description',
         'config',
         'user_id'
@@ -39,6 +39,8 @@ class Server extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+
 
 
 
