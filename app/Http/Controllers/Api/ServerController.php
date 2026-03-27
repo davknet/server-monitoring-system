@@ -8,6 +8,7 @@ use App\Models\Server;
 use App\Http\Resources\ServerResource;
 use App\Http\Requests\StoreServerRequest;
 use App\Http\Requests\UpdateServerRequest;
+use Illuminate\Support\Facades\Log;
 
 class ServerController extends Controller
 {
@@ -27,6 +28,8 @@ class ServerController extends Controller
     public function store(StoreServerRequest $request)
     {
         $server = Server::create($request->validated());
+
+        Log::info('Server created', ['server_id' => $server->id, 'user_id' => auth()->id()]);
 
         return new ServerResource($server);
     }
