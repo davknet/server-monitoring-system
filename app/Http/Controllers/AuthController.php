@@ -20,10 +20,17 @@ class AuthController extends Controller
    public function login(LoginRequest $request)
 {
 
+// Log::info('Login attempt for email: ' . $request->input('email'));
+// Log::info('Login attempt for password: ' . $request->input('password'));
+// Log::info('Login attempt with validated data: ' . json_encode($request->validated()));
+
+
+
+
     if (Auth::attempt($request->validated())) {
         $request->session()->regenerate();
 
-        return redirect('/dashboard');
+        return redirect('/');
     }
 
     return back()->withErrors([
