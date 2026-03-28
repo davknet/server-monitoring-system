@@ -16,7 +16,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/servers/{server}/edit', [ServerWebController::class, 'update'])->name('servers.edit');
     Route::delete('/servers/{server}', [ServerWebController::class , 'destroy'])->name('servers.destroy');
     Route::put('/server/{server}/save', [ServerWebController::class, 'save'])->name('servers.save');
-    
+    Route::get('/servers/search', [ServerWebController::class, 'search'])->name('servers.search');
+
 });
 
 
