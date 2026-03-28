@@ -45,9 +45,25 @@ class Server extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function getPasswordAttribute($value)
+
+
+    public function setPasswordAttribute($value)
     {
-    return $value ? Crypt::decryptString($value) : null;
+        // This automatically encrypts whenever you save/update the password
+        $this->attributes['password'] = $value
+            ? Crypt::encryptString($value)
+            : null;
     }
+
+
+     public function getDecryptedPassword(): ?string
+    {
+        return $this->attributes['password']
+            ? Crypt::decryptString($this->attributes['password'])
+            : null;
+    }
+
+
+    
 
 }
