@@ -17,9 +17,11 @@ return new class extends Migration
             $table->string('url');
             $table->string('ip_address');
             $table->string('port')->nullable();
+            $table->string('username')->nullable();
+            $table->string('password')->nullable();
             $table->foreignId('protocol_id')->constrained()->cascadeOnDelete();
-            $table->string('method', 10 );
-            $table->json('config')->nullable(); // e.g. headers, auth details, etc.
+            $table->string('method', 10);
+            $table->json('config')->nullable(); // headers, auth, etc.
             $table->foreignId('user_id')->nullable()->constrained()->nullOnDelete();
             $table->text('description')->nullable();
             $table->timestamps();
