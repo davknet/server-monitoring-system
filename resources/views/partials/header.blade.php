@@ -57,7 +57,7 @@
                         <button type="submit" class="main-link logout-btn">Logout</button>
                     </form>
                 </li>
-                <li class="main-link-items"><a href="{{ route('home') }}" class="main-link">Dashboard</a></li>
+                {{-- <li class="main-link-items"><a href="{{ route('home') }}" class="main-link">some</a></li> --}}
             @endguest
         </ul>
     </nav>
