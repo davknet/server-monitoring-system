@@ -8,7 +8,7 @@ namespace App\Health\Intr;
  * Implementing classes must provide a method to attempt a connection
  * and return whether the connection was successful.
  */
-interface  
+interface  ConnectorInterface
 {
     /**
      * Attempt to establish a connection.
