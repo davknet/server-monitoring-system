@@ -12,7 +12,9 @@ Route::middleware('auth')->group(function () {
     Route::post('/logout', [App\Http\Controllers\AuthController::class, 'logout'])->name('logout');
     Route::get('/create-server', [CreateServerController::class, 'index'])->name('create-server');
     Route::post('/add-server', [ServerWebController::class, 'store'])->name('servers.store');
-        Route::get('/update-server', [CreateServerController::class, 'update'])->name('update-server');
+    Route::get('/update-server', [CreateServerController::class, 'update'])->name('update-server');
+    Route::get('/servers/{id}/edit', [ServerWebController::class, 'update'])->name('servers.edit');
+    Route::delete('/servers/{id}', [ServerWebController::class , 'delete'])->name('servers.destroy');
 });
 
 
