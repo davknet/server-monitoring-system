@@ -17,26 +17,56 @@ class ServerWebController extends Controller
    public function store(Request $request) // handle form submit
     {
         // Log::info('Attempting to create server', ['user_id' => Auth::id(), 'request_data' => $request->all()]);
-        $request->validate([
+            $request->validate([
             'name' => 'required|string|max:255',
             'url' => 'required|url|max:255',
             'protocol_id' => 'required|exists:protocols,id',
             'method' => 'required|exists:methods,name',
             'description' => 'nullable|string',
-            'ip_address'  => 'required|ip',
-           'username' => 'required_if:method,FTP,SSH|string|max:255',
-           'password' => 'required_if:method,FTP,SSH|string|max:255',
-            'port'        => 'nullable|integer|min:1|max:65535',
-            'config'      => 'nullable|json',
-            'user_id'     => 'nullable|exists:users,id',
+            'ip_address' => 'required|ip',
+            'username' => [
+                'nullable',
+                'string',
+                'max:255',
+                function ($attribute, $value, $fail) use ($request) {
+                    $protocol = \App\Models\Protocol::find($request->protocol_id);
+                    if ($protocol && in_array(strtoupper($protocol->protocol), ['FTP', 'SSH']) && empty($value)) {
+                        $fail('The username is required for FTP or SSH protocols.');
+                    }
+                }
+            ],
+            'password' => [
+                'nullable',
+                'string',
+                'max:255',
+                function ($attribute, $value, $fail) use ($request) {
+                    $protocol = \App\Models\Protocol::find($request->protocol_id);
+                    if ($protocol && in_array(strtoupper($protocol->protocol), ['FTP', 'SSH']) && empty($value)) {
+                        $fail('The password is required for FTP or SSH protocols.');
+                    }
+                }
+            ],
+            'port' => 'nullable|integer|min:1|max:65535',
+            'config' => 'nullable|json',
+            'user_id' => 'nullable|exists:users,id',
         ]);
 
         $userId = Auth::id();
 
+        $password = $request->input('password');
+
+        if ($password === '123456789') {
+            $password = null;
+        }
+
+
+
         $request->merge([
-            'user_id' => $userId
+            'user_id' => $userId ,
+            'password' => $password,
         ]);
 
+     Log::info('Updating server', ['user_id' => $userId, 'server_id' => $request->id, 'request_data' => $request->all()]);
         Server::create($request->all());
 
         return redirect()->route('create-server')->with('success', 'Server added successfully!');
@@ -61,17 +91,48 @@ class ServerWebController extends Controller
             'method' => 'required|exists:methods,name',
             'description' => 'nullable|string',
             'ip_address' => 'required|ip',
-            'username' => 'required_if:method,FTP,SSH|string|max:255',
-           'password' => 'required_if:method,FTP,SSH|string|max:255',
+            'username' => [
+                'nullable',
+                'string',
+                'max:255',
+                function ($attribute, $value, $fail) use ($request) {
+                    $protocol = \App\Models\Protocol::find($request->protocol_id);
+                    if ($protocol && in_array(strtoupper($protocol->protocol), ['FTP', 'SSH']) && empty($value)) {
+                        $fail('The username is required for FTP or SSH protocols.');
+                    }
+                }
+            ],
+            'password' => [
+                'nullable',
+                'string',
+                'max:255',
+                function ($attribute, $value, $fail) use ($request) {
+                    $protocol = \App\Models\Protocol::find($request->protocol_id);
+                    if ($protocol && in_array(strtoupper($protocol->protocol), ['FTP', 'SSH']) && empty($value)) {
+                        $fail('The password is required for FTP or SSH protocols.');
+                    }
+                }
+            ],
             'port' => 'nullable|integer|min:1|max:65535',
             'config' => 'nullable|json',
         ]);
 
         $userId = Auth::id();
-            // Log::info('Updating server', ['user_id' => $userId, 'server_id' => $server->id, 'request_data' => $request->all()]);
+
+        $password = $request->input('password');
+
+        if ($password === '123456789') {
+            $password = null;
+        }
+
+
+
         $request->merge([
             'user_id' => $userId  ,
+            'password' => $password,
         ]);
+
+        
 
         $server->update($request->all());
 

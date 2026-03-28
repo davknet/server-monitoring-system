@@ -49,10 +49,22 @@ class Server extends Model
 
     public function setPasswordAttribute($value)
     {
-        // This automatically encrypts whenever you save/update the password
-        $this->attributes['password'] = $value
-            ? Crypt::encryptString($value)
-            : null;
+
+        $value = trim($value);
+         // Only encrypt if not null and not empty string
+        if ($value !== null && $value !== '') {
+            // Prevent double encryption: check if value is already encrypted
+            try {
+                Crypt::decryptString($value);
+                // If decryption succeeds, assume already encrypted → use as-is
+                $this->attributes['password'] = $value;
+            } catch (\Illuminate\Contracts\Encryption\DecryptException $e) {
+                // Not encrypted yet → encrypt it
+                $this->attributes['password'] = Crypt::encryptString($value);
+            }
+        } else {
+            $this->attributes['password'] = null;
+        }
     }
 
 
@@ -64,6 +76,6 @@ class Server extends Model
     }
 
 
-    
+
 
 }

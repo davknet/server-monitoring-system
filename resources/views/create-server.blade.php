@@ -49,15 +49,18 @@
 
     <div class="mb-4">
         <label for="protocol_id" class="block font-semibold mb-1">Protocol</label>
-        <select name="protocol_id" id="protocol_id" class="w-full border border-gray-300 p-2 rounded" required>
-            <option value="">Select Protocol</option>
-            @foreach($protocols as $protocol)
-                <option value="{{ $protocol->id }}" {{ old('protocol_id') == $protocol->id ? 'selected' : '' }}>
-                    {{ $protocol->name }} ({{ $protocol->protocol }})
-                </option>
-            @endforeach
-        </select>
+       <select name="protocol_id" id="protocol_id" class="w-full border border-gray-300 p-2 rounded" required>
+          <option value="">Select Protocol</option>
+        @foreach($protocols as $protocol)
+            <option value="{{ $protocol->id }}"
+                    data-auth="{{ in_array(strtoupper($protocol->protocol), ['FTP','SSH']) ? '1' : '0' }}"
+                    {{ old('protocol_id') == $protocol->id ? 'selected' : '' }}>
+                {{ $protocol->name }} ({{ $protocol->protocol }})
+            </option>
+        @endforeach
+    </select>
     </div>
+
 
 
     <div class="mb-4">
@@ -71,10 +74,26 @@
             @endforeach
         </select>
 
+     </div>
+        <!-- Username (hidden by default) -->
+    <div class="mb-4" id="username_field" style="display: none;">
+        <label for="username" class="block font-semibold mb-1">Username</label>
+        <input type="text" name="username" id="username" value="{{ old('username') }}"
+            class="w-full border border-gray-300 p-2 rounded">
+    </div>
 
-
-
-
+    <!-- Password (hidden by default) -->
+    <div class="mb-4" id="password_field" style="display: none;">
+    <label for="password" class="block font-semibold mb-1">Password</label>
+    <input
+        type="password"
+        name="password"
+        id="password"
+        value="{{ old('password') ?? '' }}"
+        placeholder="Enter password"
+        class="w-full border border-gray-300 p-2 rounded"
+    >
+     </div>
     <div class="mb-4">
         <label for="description" class="block font-semibold mb-1">Description</label>
         <textarea name="description" id="description" class="w-full border border-gray-300 p-2 rounded">{{ old('description') }}</textarea>
@@ -84,4 +103,35 @@
         Add Server
     </button>
 </form>
+<script>
+
+document.addEventListener('DOMContentLoaded', function () {
+    const protocolSelect = document.getElementById('protocol_id');
+
+    const usernameField = document.getElementById('username_field');
+    const passwordField = document.getElementById('password_field');
+
+    function toggleAuthFields() {
+        const selectedOption = protocolSelect.options[protocolSelect.selectedIndex];
+        console.log('Selected Protocol:', selectedOption.text);
+        const requiresAuth = selectedOption.dataset.auth === '1';
+        console.log('Requires Auth:', requiresAuth);
+
+        if (requiresAuth) {
+            usernameField.style.display = 'block';
+            passwordField.style.display = 'block';
+        } else {
+            usernameField.style.display = 'none';
+            passwordField.style.display = 'none';
+        }
+    }
+
+    // Run on page load (to handle old values)
+    toggleAuthFields();
+
+    // Run whenever protocol changes
+    protocolSelect.addEventListener('change', toggleAuthFields);
+});
+
+</script>
 @endsection
