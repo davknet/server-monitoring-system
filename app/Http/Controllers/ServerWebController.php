@@ -22,6 +22,8 @@ class ServerWebController extends Controller
             'protocol_id' => 'required|exists:protocols,id',
             'method' => 'required|exists:methods,name',
             'description' => 'nullable|string',
+            'ip_address' => 'required|ip',
+            'port' => 'nullable|integer|min:1|max:65535',
             'config' => 'nullable|json',
             'user_id' => 'nullable|exists:users,id',
         ]);
