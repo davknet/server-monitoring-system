@@ -45,6 +45,11 @@ class Server extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function requestTests()
+    {
+        return $this->hasMany(RequestTestModel::class);
+    }
+
 
 
     public function setPasswordAttribute($value)
