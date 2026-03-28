@@ -2,63 +2,84 @@
 # server-monitoring-system
 The project was created for an assignment 
 =======
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+Server Monitoring System
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+This project allows you to monitor servers via multiple protocols (HTTP, HTTPS, FTP, SSH) and log health checks automatically.
 
-## About Laravel
+Prerequisites
+PHP ≥ 8.1
+Composer
+MySQL or MariaDB
+Git
+Node.js & npm (optional, if you plan to compile assets)
+1. Clone the Repository
+git clone https://github.com/<your-username>/<repository-name>.git
+cd <repository-name>
+2. Install Dependencies
+composer install
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+This will install all Laravel packages.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+3. Environment Setup
+Copy .env.example to .env:
+cp .env.example .env
+Edit .env to set database credentials:
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=server_monitoring
+DB_USERNAME=root
+DB_PASSWORD=
+4. Generate Application Key
+php artisan key:generate
+5. Run Migrations and Seed Database
+php artisan migrate --seed
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+This will:
 
-## Learning Laravel
+Create all tables, including servers and request_tests.
+Insert a default user with:
+Email: test@example.com
+Password: 123456
+6. Serve the Application
+php artisan serve
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+This will start a local server (usually at http://127.0.0.1:8000). Open it in your browser.
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+7. Log in and Test
+Login using the seeded user (test@example.com / 123456).
+Go to Add Server page.
+Add a server with proper URL, IP, protocol, and optional username/password if required.
+The server will appear in the health check table on the Home/Dashboard page.
+8. Run Scheduled Server Checks
 
-## Laravel Sponsors
+Laravel uses scheduling instead of traditional cron jobs. To start the scheduler:
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+php artisan schedule:work
 
-### Premium Partners
+Why schedule:work is better than cron:
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+Runs immediately in your current environment without editing crontab.
+Uses Laravel's scheduler logic, making it easier to manage multiple scheduled tasks.
+Logs failures automatically.
+Portable across different environments and development machines.
+9. Optional: Installing Artisan
 
-## Contributing
+Artisan is bundled with Laravel, so if you have composer install completed, you already have it. Check:
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+php artisan --version
 
-## Code of Conduct
+If PHP is installed but you don’t see artisan, make sure you are in the project root and have PHP CLI available in your PATH.
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+10. Notes
+Use php artisan migrate:fresh --seed if you want to reset the database and reseed.
+The server health table updates automatically every 10 seconds via AJAX.
+Use php artisan schedule:work in a separate terminal to continuously run background checks.
 
-## Security Vulnerabilities
+✅ With these steps, a new developer can clone the project, run migrations, seed the database, start the server, log in, add servers, and watch automated health checks in real-time.
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+If you want, I can also add a small diagram or workflow explanation for the README showing how servers → checks → request_tests → AJAX updates, which makes it much easier to understand for new developers.
 
-## License
+Do you want me to create that diagram?
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
->>>>>>> d6a91cc (first commit downloaded laravel package)
+
