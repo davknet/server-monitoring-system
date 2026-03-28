@@ -15,6 +15,7 @@ class Server extends Model
         'protocol_id',
         'method',
         'ip_address',
+        'port',
         'description',
         'config',
         'user_id'
