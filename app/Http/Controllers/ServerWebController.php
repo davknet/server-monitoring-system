@@ -75,12 +75,42 @@ class ServerWebController extends Controller
 
 
     public function destroy(Server $server)
-{
-    $server->delete();
+    {
+        $server->delete();
 
-    return redirect()
-        ->route('update-server')
-        ->with('success', 'Server deleted successfully!');
+        return redirect()
+            ->route('update-server')
+            ->with('success', 'Server deleted successfully!');
+    }
+
+
+
+
+   public function search(Request $request)
+{
+    $query = $request->input('query');
+
+    $servers = Server::query();
+
+    // If query is numeric, search ID exactly
+    if (is_numeric($query)) {
+        $servers = $servers->where('id', $query)
+            ->orWhere('name', 'like', "%{$query}%")
+            ->orWhere('ip_address', 'like', "%{$query}%")
+            ->orWhere('port', $query) // exact match for port
+            ->orWhere('method', 'like', "%{$query}%")
+            ->orWhere('description', 'like', "%{$query}%");
+    } else {
+        // Non-numeric query, search everything except ID/port exact
+        $servers = $servers->where('name', 'like', "%{$query}%")
+            ->orWhere('ip_address', 'like', "%{$query}%")
+            ->orWhere('method', 'like', "%{$query}%")
+            ->orWhere('description', 'like', "%{$query}%");
+    }
+
+    $servers = $servers->latest()->get();
+
+    return view('update-server', compact('servers'));
 }
 
 }

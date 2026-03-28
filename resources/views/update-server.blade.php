@@ -10,9 +10,30 @@
         Update Server
     </h1>
 
+
+
     <div class="max-w-7xl mx-auto bg-white shadow-lg rounded-2xl overflow-hidden">
 
         <div class="overflow-x-auto">
+            <form action="{{ route('servers.search') }}" method="GET" class="mb-6 flex flex-col md:flex-row gap-2">
+
+    <input type="text"
+           name="query"
+           placeholder="Search by  Name, IP, Port, Method..."
+           value="{{ request('query') }}"
+           class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-400">
+
+    <button type="submit"
+            class="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 transition">
+        Search
+    </button>
+
+    <a href="{{ route('update-server') }}"
+       class="bg-gray-400 text-white px-4 py-2 rounded-lg hover:bg-gray-500 transition text-center">
+        Reset
+    </a>
+
+</form>
             <table class="min-w-full text-sm text-left">
 
                 <!-- Table Head -->
@@ -22,6 +43,7 @@
                         <th class="px-6 py-4">Name</th>
                         <th class="px-6 py-4">IP Address</th>
                         <th class="px-6 py-4">Port</th>
+                        <th class="px-6 py-4">Method</th>
                         <th class="px-6 py-4">Description</th>
                         <th class="px-6 py-4">Created</th>
                         <th class="px-6 py-4 text-center">Actions</th>
@@ -48,6 +70,9 @@
 
                             <td class="px-6 py-4">
                                 {{ $server->port ?? '—' }}
+                            </td>
+                            <td class="px-6 py-4">
+                                {{ $server->method ?? '—' }}
                             </td>
 
                              <td class="px-6 py-4">
