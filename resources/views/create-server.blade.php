@@ -36,6 +36,17 @@
                class="w-full border border-gray-300 p-2 rounded" required>
     </div>
 
+     <div class="mb-4">
+        <label for="ip_address" class="block font-semibold mb-1">IP Address</label>
+        <input type="text" name="ip_address" id="ip_address" value="{{ old('ip_address') }}"
+               class="w-full border border-gray-300 p-2 rounded" required>
+    </div>
+        <div class="mb-4">
+        <label for="port" class="block font-semibold mb-1">Port</label>
+        <input type="text" name="port" id="port" value="{{ old('port') }}"
+               class="w-full border border-gray-300 p-2 rounded" required>
+    </div>
+
     <div class="mb-4">
         <label for="protocol_id" class="block font-semibold mb-1">Protocol</label>
         <select name="protocol_id" id="protocol_id" class="w-full border border-gray-300 p-2 rounded" required>
