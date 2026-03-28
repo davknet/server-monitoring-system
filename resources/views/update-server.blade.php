@@ -22,6 +22,7 @@
                         <th class="px-6 py-4">Name</th>
                         <th class="px-6 py-4">IP Address</th>
                         <th class="px-6 py-4">Port</th>
+                        <th class="px-6 py-4">Description</th>
                         <th class="px-6 py-4">Created</th>
                         <th class="px-6 py-4 text-center">Actions</th>
                     </tr>
@@ -47,6 +48,10 @@
 
                             <td class="px-6 py-4">
                                 {{ $server->port ?? '—' }}
+                            </td>
+
+                             <td class="px-6 py-4">
+                                {{ $server->description ?? '—' }}
                             </td>
 
                             <td class="px-6 py-4 text-gray-500">
