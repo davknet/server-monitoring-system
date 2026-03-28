@@ -24,7 +24,7 @@ class CreateServerController extends Controller
 {
     // $protocols = Protocol::all();
     // $methods = Method::all();
-    $servers = Server::latest()->get(); // 👈 get all servers
+    $servers = Server::latest()->get(); //  get all servers
 
     return view('update-server', compact( 'servers'));
 }

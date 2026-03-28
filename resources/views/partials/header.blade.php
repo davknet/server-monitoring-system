@@ -20,7 +20,7 @@
                             <ul>
                                 <li><a href="{{ route('create-server') }}">Add Server</a></li>
                                 <li><a href="{{ route('update-server') }}">Update Server</a></li>
-                                <li><a href="#">Delete Server</a></li>
+                                <li><a href="{{ route('update-server') }}">Delete Server</a></li>
                             </ul>
                         </li>
                         <li class="drop-boxes">
@@ -82,8 +82,8 @@
                             <p>Servers</p>
                             <ul>
                                 <li><a href="{{ route('create-server') }}">Add Server</a></li>
-                                <li><a href="#">Update Server</a></li>
-                                <li><a href="#">Delete Server</a></li>
+                                <li><a href="{{ route('update-server') }}">Update Server</a></li>
+                                <li><a href="{{ route('update-server') }}">Delete Server</a></li>
                             </ul>
                         </li>
                         <li class="drop-boxes">

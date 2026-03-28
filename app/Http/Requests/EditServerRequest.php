@@ -5,7 +5,7 @@ namespace App\Http\Requests;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
-class UpdateServerRequest extends FormRequest
+class EditServerRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -23,12 +23,7 @@ class UpdateServerRequest extends FormRequest
     public function rules(): array
     {
         return [
-             'name'         => 'sometimes|string|max:255',
-              'url'         => 'sometimes|url',
-              'protocol_id' => 'sometimes|exists:protocols,id',
-              'status_id'   => 'sometimes|exists:statuses,id',
-              'description' => 'nullable|string',
-              'config'      => 'nullable|array',
+            //
         ];
     }
 }

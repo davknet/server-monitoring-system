@@ -68,7 +68,7 @@
                                 </a>
 
                                 <!-- Delete Button -->
-                                <form action="{{ route('servers.destroy', $server->id) }}"
+                                <form action="{{ route('servers.destroy', $server ) }}"
                                       method="POST"
                                       class="inline-block"
                                       onsubmit="return confirm('Are you sure?')">

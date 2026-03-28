@@ -13,8 +13,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/create-server', [CreateServerController::class, 'index'])->name('create-server');
     Route::post('/add-server', [ServerWebController::class, 'store'])->name('servers.store');
     Route::get('/update-server', [CreateServerController::class, 'update'])->name('update-server');
-    Route::get('/servers/{id}/edit', [ServerWebController::class, 'update'])->name('servers.edit');
-    Route::delete('/servers/{id}', [ServerWebController::class , 'delete'])->name('servers.destroy');
+    Route::get('/servers/{server}/edit', [ServerWebController::class, 'update'])->name('servers.edit');
+    Route::delete('/servers/{server}', [ServerWebController::class , 'destroy'])->name('servers.destroy');
+    Route::put('/server/{server}/save', [ServerWebController::class, 'save'])->name('servers.save');
+    
 });
 
 
