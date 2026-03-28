@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Crypt;
 
 class Server extends Model
 {
@@ -16,6 +17,8 @@ class Server extends Model
         'method',
         'ip_address',
         'port',
+        'username',
+        'password',
         'description',
         'config',
         'user_id'
@@ -42,9 +45,9 @@ class Server extends Model
         return $this->belongsTo(User::class);
     }
 
-
-
-
-
+    public function getPasswordAttribute($value)
+    {
+    return $value ? Crypt::decryptString($value) : null;
+    }
 
 }
