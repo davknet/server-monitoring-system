@@ -22,36 +22,39 @@
     </table>
 </div>
 
+<!-- Pagination Controls -->
+<div class="mt-4 flex justify-center space-x-1" id="pagination"></div>
+
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const tableBody = document.querySelector('#servers-table tbody');
+    const paginationDiv = document.getElementById('pagination');
 
-    function fetchServerTests() {
-        fetch('{{ route("server-tests") }}')
+    let currentPage = 1;
+
+    function fetchServerTests(page = 1) {
+        fetch('http://127.0.0.1:8000/server-tests?page=' + page)
             .then(res => res.json())
             .then(data => {
-                tableBody.innerHTML = ''; // clear old rows
+                tableBody.innerHTML = '';
+                paginationDiv.innerHTML = '';
 
-                const tests = data.data; // paginator data array
+                const tests = data.data;
 
                 if (tests.length === 0) {
                     tableBody.innerHTML = '<tr><td colspan="5" class="text-center p-3">No server tests found</td></tr>';
                     return;
                 }
 
+                // populate table
                 tests.forEach((test, index) => {
                     const row = document.createElement('tr');
-
-                    // alternating row colors
                     const bgClass = index % 2 === 0 ? 'bg-white' : 'bg-gray-50';
-
-                    // status color
                     const statusClass = test.status === 'healthy'
                         ? 'text-green-700 font-semibold'
                         : 'text-red-700 font-semibold';
 
                     row.className = `${bgClass} hover:bg-gray-100 transition`;
-
                     row.innerHTML = `
                         <td class="p-3 border-b">${test.server_name}</td>
                         <td class="p-3 border-b">${test.server_ip}</td>
@@ -61,15 +64,67 @@ document.addEventListener('DOMContentLoaded', function() {
                     `;
                     tableBody.appendChild(row);
                 });
+
+                // Smart pagination (max 6 buttons)
+const totalPages = data.last_page;
+const current = data.current_page;
+
+let start = Math.max(1, current - 2);
+let end = Math.min(totalPages, start + 5);
+
+// fix range near the end
+if (end - start < 5) {
+    start = Math.max(1, end - 5);
+}
+
+// Prev button
+if (data.prev_page_url) {
+    const prevBtn = document.createElement('button');
+    prevBtn.textContent = 'Prev';
+    prevBtn.className = 'px-3 py-1 bg-gray-300 rounded hover:bg-gray-400';
+    prevBtn.onclick = () => {
+        currentPage--;
+        fetchServerTests(currentPage);
+    };
+    paginationDiv.appendChild(prevBtn);
+}
+
+// Page numbers (max 6)
+for (let i = start; i <= end; i++) {
+    const btn = document.createElement('button');
+    btn.textContent = i;
+
+    btn.className = `px-3 py-1 rounded ${
+        i === current
+            ? 'bg-blue-500 text-white'
+            : 'bg-gray-300 text-gray-700 hover:bg-gray-400'
+    }`;
+
+    btn.onclick = () => {
+        currentPage = i;
+        fetchServerTests(i);
+    };
+
+    paginationDiv.appendChild(btn);
+}
+
+// Next button
+if (data.next_page_url) {
+    const nextBtn = document.createElement('button');
+    nextBtn.textContent = 'Next';
+    nextBtn.className = 'px-3 py-1 bg-gray-300 rounded hover:bg-gray-400';
+    nextBtn.onclick = () => {
+        currentPage++;
+        fetchServerTests(currentPage);
+    };
+    paginationDiv.appendChild(nextBtn);
+}
             })
             .catch(err => console.error('Error fetching server tests:', err));
     }
 
-    // Fetch initially
     fetchServerTests();
-
-    // Fetch every 10 seconds
-    setInterval(fetchServerTests, 10000);
+    setInterval(() => fetchServerTests(currentPage), 10000);
 });
 </script>
 @endsection

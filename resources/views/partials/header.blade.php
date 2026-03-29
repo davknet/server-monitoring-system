@@ -44,7 +44,7 @@
             </li>
 
             <li class="main-link-items"><a href="#" class="main-link">Make Request</a></li>
-            <li class="main-link-items"><a href="#" class="main-link">All Servers</a></li>
+            <li class="main-link-items"><a href="{{ route('servers.all') }}" class="main-link">All Servers</a></li>
         </ul>
 
         <ul class="main-small-unordered-list">
@@ -107,8 +107,9 @@
             </li>
 
             <li><a href="#">Make Request</a></li>
-            <li><a href="#">All Servers</a></li>
+            <li><a href="{{ route('servers.all') }}">All Servers</a></li>
 
+            
             @guest
                 <li><a href="{{ route('login') }}">Login</a></li>
             @else

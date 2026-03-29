@@ -14,9 +14,14 @@ class RequestTestController extends Controller
     {
         $servers = Server::all();
 
+
+
         foreach ($servers as $server) {
             $status = 'not healthy';
             $server = $server->toArray(); // Convert model to array for factory
+
+            Log::info("Running health check for server", $server );
+
             $message = null;
 
             try {
