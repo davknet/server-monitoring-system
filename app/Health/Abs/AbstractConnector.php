@@ -63,6 +63,17 @@ abstract class AbstractConnector implements ConnectorInterface
      * @return bool True if the connection was successful, false otherwise.
      */
     abstract protected function tryConnect(): bool;
+
+
+    /**
+     * @var string|null Stores last connection error message
+     */
+    protected ?string $errorMessage = null;
+
+        public function getErrorMessage(): ?string
+    {
+        return $this->errorMessage;
+    }
 }
 
 

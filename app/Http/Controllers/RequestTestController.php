@@ -4,8 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Server;
 use App\Models\RequestTestModel;
-use App\Health\Cls\FactoryConnectorFactory;
+use App\Health\Factory\ConnectorFactory as FactoryConnectorFactory;
 use Illuminate\Support\Facades\Log;
+
 
 class RequestTestController extends Controller
 {
@@ -15,6 +16,7 @@ class RequestTestController extends Controller
 
         foreach ($servers as $server) {
             $status = 'not healthy';
+            $server = $server->toArray(); // Convert model to array for factory
             $message = null;
 
             try {
@@ -25,15 +27,15 @@ class RequestTestController extends Controller
                     $status = 'healthy';
                 } else {
                     $message = method_exists($connector, 'getErrorMessage')
-                        ? $connector->getErrorMessage()
+                        ? 'Connection failed: '
                         : 'Connection failed';
                 }
 
             } catch (\Exception $e) {
                 // Only log real errors
                 Log::error("Connector error", [
-                    'server_id' => $server->id,
-                    'server_name' => $server->name,
+                    'server_id' => $server['id'],
+                    'server_name' => $server['name'],
                     'error' => $e->getMessage()
                 ]);
 
@@ -42,9 +44,9 @@ class RequestTestController extends Controller
 
             // Save result
             RequestTestModel::create([
-                'server_id'   => $server->id,
-                'server_name' => $server->name,
-                'server_ip'   => $server->ip_address,
+                'server_id'   => $server['id'],
+                'server_name' => $server['name'],
+                'server_ip'   => $server['ip_address'],
                 'status'      => $status,
                 'message'     => $message,
             ]);
