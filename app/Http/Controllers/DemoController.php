@@ -13,6 +13,8 @@ class DemoController extends Controller
     {
         $url = 'https://httpbin.org/get'; // The HTTP URL you want to test
 
+        
+
         try {
             $connector = new HTTPConnector($url);
             $success = $connector->connect();
