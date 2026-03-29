@@ -8,22 +8,13 @@ use App\Health\Abs\AbstractConnector;
  *
  * Provides a connector for SSH protocol.
  * Extends AbstractConnector to implement SSH-specific
- * connection and authentication logic.
- *
- * Uses the PHP SSH2 extension to attempt a connection.
+ * connection and authentication logic using PHP's SSH2 extension.
  *
  * @package App\Health\Cls
  */
 class SSHConnector extends AbstractConnector
 {
-    /**
-     * @var string Username for SSH authentication.
-     */
     private string $user;
-
-    /**
-     * @var string Password for SSH authentication.
-     */
     private string $pass;
 
     /**
@@ -42,21 +33,32 @@ class SSHConnector extends AbstractConnector
     }
 
     /**
-     * Perform SSH connection attempt.
+     * Attempt to establish an SSH connection.
      *
-     * @return bool True if connection and authentication succeed, false otherwise.
+     * Returns true if connection and authentication succeed,
+     * false otherwise. Sets $this->errorMessage on failure.
+     *
+     * @return bool
      */
     protected function tryConnect(): bool
     {
         if (!function_exists('ssh2_connect')) {
+            $this->errorMessage = "SSH2 PHP extension is not installed";
             return false;
         }
 
         $conn = @ssh2_connect($this->host, $this->port);
         if (!$conn) {
+            $this->errorMessage = "Failed to connect to {$this->host}:{$this->port}";
             return false;
         }
 
-        return @ssh2_auth_password($conn, $this->user, $this->pass);
+        $auth = @ssh2_auth_password($conn, $this->user, $this->pass);
+        if (!$auth) {
+            $this->errorMessage = "SSH authentication failed for user '{$this->user}'";
+            return false;
+        }
+
+        return true;
     }
 }

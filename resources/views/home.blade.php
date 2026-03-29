@@ -32,7 +32,14 @@ document.addEventListener('DOMContentLoaded', function() {
             .then(data => {
                 tableBody.innerHTML = ''; // clear old rows
 
-                data.forEach((test, index) => {
+                const tests = data.data; // paginator data array
+
+                if (tests.length === 0) {
+                    tableBody.innerHTML = '<tr><td colspan="5" class="text-center p-3">No server tests found</td></tr>';
+                    return;
+                }
+
+                tests.forEach((test, index) => {
                     const row = document.createElement('tr');
 
                     // alternating row colors

@@ -7,29 +7,12 @@ use App\Health\Abs\AbstractConnector;
  * Class HttpsConnector
  *
  * Provides a connector for HTTPS requests.
- * Extends AbstractConnector to implement protocol-specific
- * connection logic for HTTPS URLs.
- *
- * This class can be customized in the future for SSL settings,
- * certificate verification, or additional headers.
- *
- * Example usage:
- * ```php
- * $https = new HttpsConnector('https://example.com');
- * if ($https->connect()) {
- *     echo "HTTPS connection successful";
- * } else {
- *     echo "HTTPS connection failed";
- * }
- * ```
+ * Extends AbstractConnector to implement secure HTTP connection logic.
  *
  * @package App\Health\Cls
  */
 class HttpsConnector extends AbstractConnector
 {
-    /**
-     * @var string The full HTTPS URL to connect to.
-     */
     private string $url;
 
     /**
@@ -39,30 +22,39 @@ class HttpsConnector extends AbstractConnector
      */
     public function __construct(string $url)
     {
-        parent::__construct($url); // use host as URL for simplicity
+        parent::__construct($url);
         $this->url = $url;
     }
 
     /**
      * Attempt to establish an HTTPS connection.
      *
-     * Uses a simple GET request with a timeout.
-     * Returns true if the request succeeds, false otherwise.
+     * Uses a GET request with a timeout. Sets $this->errorMessage on failure.
      *
-     * @return bool True if connection successful, false on failure.
+     * @return bool True if connection successful, false otherwise
      */
     protected function tryConnect(): bool
     {
-        // Optional: add SSL verification context in the future
         $options = [
             "http" => [
-                "method" => "GET",
-                "timeout" => 5
+                "method"  => "GET",
+                "timeout" => 5,
+                "header"  => "User-Agent: ServerMonitor/1.0\r\n",
+            ],
+            "ssl" => [
+                "verify_peer"      => true,
+                "verify_peer_name" => true,
             ]
         ];
 
         $context = stream_context_create($options);
         $result = @file_get_contents($this->url, false, $context);
-        return $result !== false;
+
+        if ($result === false) {
+            $this->errorMessage = "Failed to connect to {$this->url} via HTTPS";
+            return false;
+        }
+
+        return true;
     }
 }

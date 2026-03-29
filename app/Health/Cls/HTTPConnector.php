@@ -7,18 +7,11 @@ use App\Health\Abs\AbstractConnector;
  * Class HTTPConnector
  *
  * Provides a connector for HTTP/HTTPS requests.
- * Extends the AbstractConnector to implement the protocol-specific
- * connection logic for HTTP(S) URLs.
+ * Extends AbstractConnector to implement protocol-specific
+ * connection logic using a simple HTTP request.
  *
- * Example usage:
- * ```php
- * $http = new HTTPConnector('https://example.com');
- * if ($http->connect()) {
- *     echo "HTTP connection successful";
- * } else {
- *     echo "HTTP connection failed";
- * }
- * ```
+ * This connector performs a lightweight GET request to verify
+ * that the target URL is reachable and responding.
  *
  * @package App\Health\Cls
  */
@@ -32,28 +25,51 @@ class HTTPConnector extends AbstractConnector
     /**
      * HTTPConnector constructor.
      *
-     * @param string $url The URL (HTTP or HTTPS) to attempt a connection to.
+     * @param string $url The URL (HTTP or HTTPS) to test.
      */
     public function __construct(string $url)
     {
-        parent::__construct($url); // use host as url for simplicity
+        parent::__construct($url); // using URL as host for simplicity
         $this->url = $url;
     }
 
     /**
      * Attempt to establish an HTTP/HTTPS connection.
      *
-     * Uses a simple GET request with a timeout. Returns true if the
-     * request succeeds, false otherwise.
+     * Sends a GET request with a timeout. If the request fails,
+     * sets an appropriate error message.
      *
-     * @return bool True if connection successful, false on failure.
+     * @return bool True if connection is successful, false otherwise.
      */
     protected function tryConnect(): bool
     {
-        $options = ["http" => ["method" => "GET", "timeout" => 5]];
+        $options = [
+            "http" => [
+                "method"  => "GET",
+                "timeout" => 5,
+                "ignore_errors" => true // allow reading response even on 4xx/5xx
+            ]
+        ];
+
         $context = stream_context_create($options);
+
         $result = @file_get_contents($this->url, false, $context);
-        return $result !== false;
+
+        if ($result === false) {
+            $this->errorMessage = "HTTP request failed for {$this->url}";
+            return false;
+        }
+
+        // Optional: check HTTP status code
+        if (isset($http_response_header)) {
+            $statusLine = $http_response_header[0] ?? '';
+
+            if (!str_contains($statusLine, '200')) {
+                $this->errorMessage = "Unexpected response: {$statusLine}";
+                return false;
+            }
+        }
+
+        return true;
     }
 }
-
