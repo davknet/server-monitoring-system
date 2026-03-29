@@ -19,7 +19,7 @@ class ServerWebController extends Controller
         // Log::info('Attempting to create server', ['user_id' => Auth::id(), 'request_data' => $request->all()]);
             $request->validate([
             'name' => 'required|string|max:255',
-            'url' => 'required|url|max:255',
+            'url' => 'required|string|max:255',
             'protocol_id' => 'required|exists:protocols,id',
             'method' => 'required|exists:methods,name',
             'description' => 'nullable|string',
@@ -86,7 +86,7 @@ class ServerWebController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'url' => 'required|url|max:255',
+            'url' => 'required|string|max:255',
             'protocol_id' => 'required|exists:protocols,id',
             'method' => 'required|exists:methods,name',
             'description' => 'nullable|string',
@@ -132,7 +132,7 @@ class ServerWebController extends Controller
             'password' => $password,
         ]);
 
-        
+
 
         $server->update($request->all());
 

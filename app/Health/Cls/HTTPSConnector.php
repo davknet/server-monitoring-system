@@ -11,7 +11,7 @@ use App\Health\Abs\AbstractConnector;
  *
  * @package App\Health\Cls
  */
-class HttpsConnector extends AbstractConnector
+class HttPSConnector extends AbstractConnector
 {
     private string $url;
 
