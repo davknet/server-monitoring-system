@@ -76,14 +76,14 @@ class ConnectorFactory
             ),
 
             'FTP' => new FTPConnector(
-                self::requireField($server, 'host'),
+                self::requireField($server, 'ip_address'),
                 $server['user'] ?? 'anonymous',
                 $server['pass'] ?? '',
                 $server['port'] ?? 21
             ),
 
             'SSH' => new SSHConnector(
-                self::requireField($server, 'host'),
+                self::requireField($server, 'ip_address'),
                 self::requireField($server, 'user'),
                 self::requireField($server, 'pass'),
                 $server['port'] ?? 22
