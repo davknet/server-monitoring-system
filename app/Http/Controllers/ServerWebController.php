@@ -18,13 +18,13 @@ class ServerWebController extends Controller
     {
         // Log::info('Attempting to create server', ['user_id' => Auth::id(), 'request_data' => $request->all()]);
             $request->validate([
-            'name' => 'required|string|max:255',
-            'url' => 'required|string|max:255',
+            'name'        => 'required|string|max:255',
+            'url'         => 'required|string|max:255',
             'protocol_id' => 'required|exists:protocols,id',
-            'method' => 'required|exists:methods,name',
+            'method'      => 'required|exists:methods,name',
             'description' => 'nullable|string',
-            'ip_address' => 'required|ip',
-            'username' => [
+            'ip_address'  => 'required|ip',
+            'username'    => [
                 'nullable',
                 'string',
                 'max:255',
@@ -37,8 +37,8 @@ class ServerWebController extends Controller
             ],
             'password' => [
                 'nullable',
-                'string',
-                'max:255',
+                'string'  ,
+                'max:255' ,
                 function ($attribute, $value, $fail) use ($request) {
                     $protocol = \App\Models\Protocol::find($request->protocol_id);
                     if ($protocol && in_array(strtoupper($protocol->protocol), ['FTP', 'SSH']) && empty($value)) {
@@ -46,8 +46,8 @@ class ServerWebController extends Controller
                     }
                 }
             ],
-            'port' => 'nullable|integer|min:1|max:65535',
-            'config' => 'nullable|json',
+            'port'    => 'nullable|integer|min:1|max:65535',
+            'config'  => 'nullable|json',
             'user_id' => 'nullable|exists:users,id',
         ]);
 
@@ -66,7 +66,7 @@ class ServerWebController extends Controller
             'password' => $password,
         ]);
 
-     Log::info('Updating server', ['user_id' => $userId, 'server_id' => $request->id, 'request_data' => $request->all()]);
+    
         Server::create($request->all());
 
         return redirect()->route('create-server')->with('success', 'Server added successfully!');
@@ -76,8 +76,7 @@ class ServerWebController extends Controller
      public function update(Server $server)
     {
          $protocols = Protocol::where('is_active', 1)->get();
-         $methods  = Method::all();
-         Log::info('Editing server', ['user_id' => Auth::id(), 'server_id' => $server->all]);
+         $methods   = Method::all();
          return view('edit-server', compact('server', 'protocols', 'methods'));
      }
 
@@ -85,13 +84,13 @@ class ServerWebController extends Controller
      public function save(Request $request, Server $server)
     {
         $request->validate([
-            'name' => 'required|string|max:255',
-            'url' => 'required|string|max:255',
+            'name'        => 'required|string|max:255',
+            'url'         => 'required|string|max:255',
             'protocol_id' => 'required|exists:protocols,id',
-            'method' => 'required|exists:methods,name',
+            'method'      => 'required|exists:methods,name',
             'description' => 'nullable|string',
-            'ip_address' => 'required|ip',
-            'username' => [
+            'ip_address'  => 'required|ip',
+            'username'    => [
                 'nullable',
                 'string',
                 'max:255',

@@ -14,17 +14,33 @@ class DemoController extends Controller
 {
     public function index()
     {
-        $url = 'demo.wftpserver.com'; // The HTTP URL you want to test
+        $url = 'https://httpbin.org/get'; // The HTTP URL you want to test
 
+        $server = [
+            'id'         => 1,
+            'name'       => 'Demo Server',
+            'url'        => $url ,
+            'ip_address' =>  '123.23.189.123' ,
+            'type'       => 'https',
+            'port'       => 80 ,
+            'username'   => null,
+            'password'   => null,
+            'method'    => 'GET',
+            'protocol'  => [
+                'name' => 'HTTPS'
+             ]
+        ];
 
 
         try {
-            $connector = new SSHConnector($url , 'demo', 'demo', 2222   );
+            $connector = FactoryConnectorFactory::create($server);
             $success = $connector->connect();
             $message = $success ? 'Connection successful' : 'Connection failed';
-        } catch (\Throwable $e) {
+        } catch (\Throwable $e){
+
             $success = false;
             $message = 'Error: ' . $e->getMessage();
+
         }
 
         // Log for debugging

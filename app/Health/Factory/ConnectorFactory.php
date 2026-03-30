@@ -3,9 +3,11 @@ namespace App\Health\Factory;
 
 use App\Health\Intr\ConnectorInterface;
 use App\Health\Cls\HTTPConnector;
-use App\Health\Cls\HttpsConnector;
+use App\Health\Cls\HTTPSConnector;
 use App\Health\Cls\FTPConnector;
 use App\Health\Cls\SSHConnector;
+use Illuminate\Support\Facades\Log;
+use App\Models\Protocol;
 
 /**
  * Class ConnectorFactory
@@ -64,32 +66,37 @@ class ConnectorFactory
      */
     public static function create(array $server): ConnectorInterface
     {
-        $method = strtoupper($server['method'] ?? '');
 
-        return match ($method) {
-            'HTTP' => new HTTPConnector(
-                self::requireField($server, 'url')
-            ),
+        $protocol = strtoupper(     Protocol::find($server['protocol_id'])->name ?? '');
 
-            'HTTPS' => new HttpsConnector(
-                self::requireField($server, 'url')
-            ),
+        Log::info("Creating connector for protocol: {$protocol}", ['server' => $server]);
 
-            'FTP' => new FTPConnector(
-                self::requireField($server, 'url'),
-                $server['username'] ?? 'anonymous',
-                $server['pass'] ?? '',
-                $server['port'] ?? 21
-            ),
 
-            'SSH' => new SSHConnector(
-                self::requireField($server, 'url'),
-                self::requireField($server, 'username'),
-                self::requireField($server, 'password'),
-                $server['port'] ?? 22
-            ),
+      return match ($protocol) {
 
-            default => throw new \InvalidArgumentException("Unsupported method: {$method}")
+        'HTTP' => new HTTPConnector(
+            self::requireField($server, 'url')
+        ),
+
+        'HTTPS' => new HTTPSConnector(
+            self::requireField($server, 'url')
+        ),
+
+        'FTP' => new FTPConnector(
+            self::requireField($server, 'url'),
+            $server['username'] ?? 'anonymous',
+            $server['password'] ?? '',
+            $server['port'] ?? 21
+        ),
+
+        'SSH' => new SSHConnector(
+            self::requireField($server, 'url'),
+            self::requireField($server, 'username'),
+            self::requireField($server, 'password'),
+            $server['port'] ?? 22
+        ),
+
+        default => throw new \InvalidArgumentException("Unsupported protocol: {$protocol}")
         };
     }
 

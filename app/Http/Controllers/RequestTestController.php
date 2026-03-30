@@ -32,7 +32,7 @@ class RequestTestController extends Controller
                     $status = 'healthy';
                 } else {
                     $message = method_exists($connector, 'getErrorMessage')
-                        ? 'Connection failed: '
+                        ? 'Connection failed - not : '
                         : 'Connection failed';
                 }
 
