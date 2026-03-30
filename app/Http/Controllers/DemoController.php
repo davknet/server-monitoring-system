@@ -14,7 +14,7 @@ class DemoController extends Controller
 {
     public function index()
     {
-        $url = 'https://httpbin.org/get'; // The HTTP URL you want to test
+        $url = 'sftp.dlptest.com'; // The HTTP URL you want to test
 
         $server = [
             'id'         => 1,
@@ -22,20 +22,23 @@ class DemoController extends Controller
             'url'        => $url ,
             'ip_address' =>  '123.23.189.123' ,
             'type'       => 'https',
-            'port'       => 80 ,
-            'username'   => null,
-            'password'   => null,
-            'method'    => 'GET',
-            'protocol'  => [
-                'name' => 'HTTPS'
-             ]
+            'port'       => 21 ,
+            'username'   => 'dlpuser' ,
+            'password'   => 'rNrKYTX9g7z3RgJRmxWuGHbeu' ,
+            'method'    => 'PUT',
+            'protocol_id'  => 3
         ];
 
 
         try {
             $connector = FactoryConnectorFactory::create($server);
             $success = $connector->connect();
-            $message = $success ? 'Connection successful' : 'Connection failed';
+            $message = $success ? 'Connection successful' : 'Connection failed'; ;
+              Log::info('HTTP Test Result', [
+            'url' => $url,
+            'success' => $success,
+            'message' => $message,
+        ]);
         } catch (\Throwable $e){
 
             $success = false;
@@ -44,11 +47,7 @@ class DemoController extends Controller
         }
 
         // Log for debugging
-        Log::info('HTTP Test Result', [
-            'url' => $url,
-            'success' => $success,
-            'message' => $message,
-        ]);
+
 
         // Send result to a Blade view
         return view('server', compact('url', 'success', 'message'));
