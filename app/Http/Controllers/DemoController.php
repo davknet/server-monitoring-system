@@ -9,6 +9,7 @@ use App\Health\Cls\HTTPConnector;
 use App\Health\Cls\SSHConnector;
 use Illuminate\Support\Facades\Log;
 use App\Health\Factory\ConnectorFactory as FactoryConnectorFactory;
+use App\Models\Server;
 
 class DemoController extends Controller
 {
@@ -16,19 +17,7 @@ class DemoController extends Controller
     {
         $url = 'sftp.dlptest.com'; // The HTTP URL you want to test
 
-        $server = [
-            'id'         => 1,
-            'name'       => 'Demo Server',
-            'url'        => $url ,
-            'ip_address' =>  '123.23.189.123' ,
-            'type'       => 'https',
-            'port'       => 21 ,
-            'username'   => 'dlpuser' ,
-            'password'   => 'rNrKYTX9g7z3RgJRmxWuGHbeu' ,
-            'method'    => 'PUT',
-            'protocol_id'  => 3
-        ];
-
+        $server = Server::with('protocol')->where('protocol_id', 3)->first();
 
         try {
             $connector = FactoryConnectorFactory::create($server);

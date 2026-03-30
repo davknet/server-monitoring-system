@@ -8,6 +8,7 @@ use App\Health\Cls\FTPConnector;
 use App\Health\Cls\SSHConnector;
 use Illuminate\Support\Facades\Log;
 use App\Models\Protocol;
+use App\Models\Server;
 
 /**
  * Class ConnectorFactory
@@ -52,27 +53,24 @@ class ConnectorFactory
      * - FTP
      * - SSH
      *
-     * @param array $server Associative array containing server data:
-     *                      - method (string): Protocol type
-     *                      - url (string, required for HTTP/HTTPS)
-     *                      - host (string, required for FTP/SSH)
-     *                      - user (string, optional for FTP/SSH)
-     *                      - pass (string, optional for FTP/SSH)
-     *                      - port (int, optional)
+     * @param Server $server The server configuration object containing necessary connection details.
      *
      * @return ConnectorInterface
      *
      * @throws \InvalidArgumentException If the method is unsupported or required fields are missing.
      */
-    public static function create(array $server): ConnectorInterface
-    {
+   public static function create(Server $server): ConnectorInterface
+{
+    $protocol = strtoupper($server->protocol->name ?? '');
 
-        $protocol = strtoupper(     Protocol::find($server['protocol_id'])->name ?? '');
+    // Log::info("Creating connector", [
+    //     'protocol' => $protocol,
+    //     'server_id' => $server->id
+    // ]);
 
-        Log::info("Creating connector for protocol: {$protocol}", ['server' => $server]);
 
 
-      return match ($protocol) {
+    return match ($protocol) {
 
         'HTTP' => new HTTPConnector(
             self::requireField($server, 'url')
@@ -84,37 +82,36 @@ class ConnectorFactory
 
         'FTP' => new FTPConnector(
             self::requireField($server, 'url'),
-            $server['username'] ?? 'anonymous',
-            $server['password'] ?? '',
-            $server['port'] ?? 21
+            $server->username ?? 'anonymous',
+            $server->getDecryptedPassword()?? '',
+            $server->port ?? 21
         ),
 
         'SSH' => new SSHConnector(
             self::requireField($server, 'url'),
             self::requireField($server, 'username'),
-            self::requireField($server, 'password'),
-            $server['port'] ?? 22
+            $server->getDecryptedPassword()?? '' ,
+            $server->port ?? 22
         ),
 
         default => throw new \InvalidArgumentException("Unsupported protocol: {$protocol}")
-        };
-    }
-
+    };
+}
     /**
      * Ensure a required field exists in the server array.
      *
-     * @param array $server
+     * @param Server $server
      * @param string $field
      * @return mixed
      *
      * @throws \InvalidArgumentException
      */
-    private static function requireField(array $server, string $field)
+    private static function requireField(Server $server, string $field)
     {
-        if (!isset($server[$field]) || $server[$field] === '') {
+        if (empty($server->$field)) {
             throw new \InvalidArgumentException("Missing required field: {$field}");
         }
 
-        return $server[$field];
+        return (string)$server->$field;
     }
 }
