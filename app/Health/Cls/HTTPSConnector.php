@@ -38,8 +38,9 @@ class HttPSConnector extends AbstractConnector
         $options = [
             "http" => [
                 "method"  => "GET",
-                "timeout" => 5,
+                "timeout" => $this->timeout,
                 "header"  => "User-Agent: ServerMonitor/1.0\r\n",
+                "ignore_errors" => true
             ],
             "ssl" => [
                 "verify_peer"      => true,
@@ -48,11 +49,26 @@ class HttPSConnector extends AbstractConnector
         ];
 
         $context = stream_context_create($options);
-        $result = @file_get_contents($this->url, false, $context);
+
+        $result = file_get_contents($this->url, false, $context);
 
         if ($result === false) {
             $this->errorMessage = "Failed to connect to {$this->url} via HTTPS";
             return false;
+        }
+
+        
+        if (isset($http_response_header)) {
+            $statusLine = $http_response_header[0] ?? '';
+
+            if (preg_match('/HTTP\/\d\.\d\s+(\d+)/', $statusLine, $matches)) {
+                $statusCode = (int)$matches[1];
+
+                if ($statusCode < 200 || $statusCode >= 300) {
+                    $this->errorMessage = "Unexpected response: {$statusLine}";
+                    return false;
+                }
+            }
         }
 
         return true;

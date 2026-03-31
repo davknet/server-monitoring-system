@@ -10,55 +10,55 @@ use Illuminate\Support\Facades\Log;
 
 class RequestTestController extends Controller
 {
-   public function runChecks()
-{
-    $servers = Server::with('protocol')->get();
+    public function runChecks()
+    {
+        $servers = Server::with('protocol')->get();
 
-    foreach ($servers as $server) {
-        $status = 'not healthy';
-        $message = null;
+        Log::info("Starting health checks for " . $servers->count() . " servers at " . now() );
+
+        foreach ($servers as $server){
+            $status = 'not healthy';
+            $message = null;
+            $responseTime = null; // initialize variable
+
+            try {
+
+                $connector = FactoryConnectorFactory::create($server);
+                Log::info("conector -> ", ['conector' => $connector]);
+                // connect() returns an array with 'success' and 'response_time'
+                $result = $connector->connect();
 
 
-        Log::info("Running health check for server", [
-            'id' => $server->id,
-            'name' => $server->name,
-            'url' => $server->url,
-        ]);
 
-        try {
+                $success = $result['success'] ?? false;
+                $responseTime = $result['response_time'] ?? null; // capture response time
+                $message = $result['error_message'] ?? null;
 
-            $connector = FactoryConnectorFactory::create($server);
+                $status = $success ? 'healthy' : 'not healthy';
 
-            if ($connector->connect()) {
-                $status = 'healthy';
-            } else {
-                $message = method_exists($connector, 'getErrorMessage')
-                    ? 'Connection failed: ' 
-                    : 'Connection failed';
+            } catch (\Exception $e) {
+                Log::error("Connector error", [
+                    'server_id'   => $server->id,
+                    'server_name' => $server->name,
+                    'error'       => $e->getMessage()
+                ]);
+
+                $message = $e->getMessage();
             }
 
-        } catch (\Exception $e) {
-            Log::error("Connector error", [
-                'server_id' => $server->id,
-                'server_name' => $server->name,
-                'error' => $e->getMessage()
+            // Save result in requests table
+            RequestTestModel::create([
+                'server_id'     => $server->id,
+                'server_name'   => $server->name,
+                'server_ip'     => $server->ip_address,
+                'status'        => $status,
+                'response_time' => $responseTime,
+                'description'   => $message,
             ]);
-
-            $message = $e->getMessage();
         }
 
-
-        RequestTestModel::create([
-            'server_id'   => $server->id,
-            'server_name' => $server->name,
-            'server_ip'   => $server->ip_address,
-            'status'      => $status,
-            'message'     => $message,
+        return response()->json([
+            'message' => 'Server health checks completed'
         ]);
     }
-
-    return response()->json([
-        'message' => 'Server health checks completed'
-    ]);
-}
 }

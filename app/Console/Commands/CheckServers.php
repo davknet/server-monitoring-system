@@ -28,7 +28,7 @@ class CheckServers extends Command
     public function handle()
     {
         //
-        Log::info('Server check started at ' . now());
+        // Log::info('Server check started at ' . now());
         $controller = new RequestTestController();
         $controller->runChecks();
         $this->info('Server health checks completed!');

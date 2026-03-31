@@ -16,6 +16,7 @@ return new class extends Migration
             $table->foreignId('server_id')->constrained()->cascadeOnDelete();
             $table->string('server_name');
             $table->string('server_ip');
+            $table->float('response_time', 10, 2 )->nullable();
             $table->enum('status', ['healthy', 'not healthy']);
             $table->text('message')->nullable();
             $table->timestamps();

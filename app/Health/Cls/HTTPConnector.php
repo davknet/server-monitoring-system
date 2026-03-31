@@ -21,7 +21,7 @@ class HTTPConnector extends AbstractConnector
      * @var string The full URL to connect to.
      */
     private string $url;
-
+    
     /**
      * HTTPConnector constructor.
      *
@@ -46,27 +46,30 @@ class HTTPConnector extends AbstractConnector
         $options = [
             "http" => [
                 "method"  => "GET",
-                "timeout" => 5,
-                "ignore_errors" => true // allow reading response even on 4xx/5xx
+                "timeout" => $this->timeout,
+                "ignore_errors" => true
             ]
         ];
 
         $context = stream_context_create($options);
 
-        $result = @file_get_contents($this->url, false, $context);
+        $result = file_get_contents($this->url, false, $context);
 
         if ($result === false) {
             $this->errorMessage = "HTTP request failed for {$this->url}";
             return false;
         }
 
-        // Optional: check HTTP status code
         if (isset($http_response_header)) {
             $statusLine = $http_response_header[0] ?? '';
 
-            if (!str_contains($statusLine, '200')) {
-                $this->errorMessage = "Unexpected response: {$statusLine}";
-                return false;
+            if (preg_match('/HTTP\/\d\.\d\s+(\d+)/', $statusLine, $matches)) {
+                $statusCode = (int)$matches[1];
+
+                if ($statusCode < 200 || $statusCode >= 300) {
+                    $this->errorMessage = "Unexpected response: {$statusLine}";
+                    return false;
+                }
             }
         }
 

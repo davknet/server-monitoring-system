@@ -37,7 +37,7 @@ class Homecontroller extends Controller
             ];
         });
 
-        Log::info('Fetched server tests', ['count' => $tests->total()]);
+        
 
         return response()->json([
             'data'         => $tests->items(),

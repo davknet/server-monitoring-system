@@ -64,7 +64,7 @@ class FTPConnector extends AbstractConnector
      */
     protected function tryConnect(): bool
     {
-        $conn = @ftp_connect($this->host, $this->port, 5);
+        $conn = @ftp_connect($this->host, $this->port, 45 );
 
         if (!$conn) {
             $this->errorMessage = "Unable to connect to FTP server {$this->host}:{$this->port}";

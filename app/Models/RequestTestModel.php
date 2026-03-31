@@ -14,6 +14,7 @@ class RequestTestModel extends Model
         'server_id',
         'server_name',
         'server_ip',
+        'response_time',
         'status',
         'message',
     ];
@@ -21,6 +22,7 @@ class RequestTestModel extends Model
 
     protected $casts = [
         'status' => 'string',
+        'response_time' => 'float',
         'message' => 'string',
     ];
 

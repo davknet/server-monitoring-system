@@ -20,6 +20,11 @@ abstract class AbstractConnector implements ConnectorInterface
      */
     protected string $host;
 
+        /**
+        * @var int Connection timeout in seconds. Default is 45 seconds.
+        */
+    protected int $timeout = 45;
+
     /**
      * @var int The port number for the connection.
      */
@@ -45,12 +50,30 @@ abstract class AbstractConnector implements ConnectorInterface
      *
      * @return bool True if the connection was successful, false otherwise.
      */
-    public function connect(): bool
+        public function connect(): array
     {
         try {
-            return $this->tryConnect();
-        } catch (\Exception $e) {
-            return false;
+            $start = microtime(true);
+
+            $success = $this->tryConnect();
+
+            $responseTime = round(microtime(true) - $start, 3);
+
+
+            $success = $success && $responseTime < 45;
+
+            return [
+                'success'       => $success,
+                'response_time' => $responseTime,
+                'error_message' => $this->errorMessage ?? null,
+            ];
+
+        }catch(\Exception $e){
+            return [
+                'success' => false,
+                'response_time' => null,
+                'error_message' => $e->getMessage(),
+            ];
         }
     }
 

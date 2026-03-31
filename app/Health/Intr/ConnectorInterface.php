@@ -19,5 +19,5 @@ interface  ConnectorInterface
      *
      * @return bool True if the connection was successful, false otherwise.
      */
-    public function connect(): bool;
+    public function connect(): array ;
 }

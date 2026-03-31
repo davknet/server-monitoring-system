@@ -23,7 +23,7 @@ Route::middleware('auth')->group(function () {
 
 });
 
-Route::get('/server-tests', [Homecontroller::class, 'serverTests'])->name('server-tests');
+Route::get('/server-tests', [DemoController::class, 'serverTests'])->name('server-tests');
 
 Route::get('/login', [App\Http\Controllers\AuthController::class, 'showLogin'])
     ->middleware('guest')
