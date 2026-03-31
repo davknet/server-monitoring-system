@@ -26,7 +26,7 @@
                         <li class="drop-boxes">
                             <p>Protocols</p>
                             <ul>
-                                <li><a href="#">Add Protocol</a></li>
+                                <li><a href="{{ route('test-page') }}">Add Protocol</a></li>
                                 <li><a href="#">Update Protocol</a></li>
                                 <li><a href="#">Delete Protocol</a></li>
                             </ul>
@@ -89,7 +89,7 @@
                         <li class="drop-boxes">
                             <p>Protocols</p>
                             <ul>
-                                <li><a href="#">Add Protocol</a></li>
+                                <li><a href="{{ route('test-page') }}">Add Protocol</a></li>
                                 <li><a href="#">Update Protocol</a></li>
                                 <li><a href="#">Delete Protocol</a></li>
                             </ul>
@@ -109,7 +109,7 @@
             <li><a href="#">Make Request</a></li>
             <li><a href="{{ route('servers.all') }}">All Servers</a></li>
 
-            
+
             @guest
                 <li><a href="{{ route('login') }}">Login</a></li>
             @else

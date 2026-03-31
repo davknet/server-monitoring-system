@@ -62,11 +62,15 @@ abstract class AbstractConnector implements ConnectorInterface
 
             $success = $success && $responseTime < 45;
 
+
+         
             return [
                 'success'       => $success,
                 'response_time' => $responseTime,
                 'error_message' => $this->errorMessage ?? null,
             ];
+
+
 
         }catch(\Exception $e){
             return [

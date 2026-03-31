@@ -53,30 +53,32 @@ class DemoController extends Controller
 
     public function testing(){
 
-         $url = 'sftp.dlptest.com'; // The HTTP URL you want to test
-
-        $server = Server::with('protocol')->where('protocol_id', 3)->first();
+        $success = false;
+         $server = Server::with('protocol')->where('protocol_id', 3)->first();
 
         try {
             $connector = FactoryConnectorFactory::create($server);
             $success = $connector->connect();
-            $message = $success ? 'Connection successful' : 'Connection failed'; ;
+            $message = !empty($success) && $success['error_message'] === '' ? $success['error_message'] : 'Connection failed';
+            $response_time = $success['response_time'] ?? null ;
+
               Log::info('HTTP Test Result', [
-            'url' => $url,
-            'success' => $success,
+            'url'     => $server->url ?? 'N/A',
+            'success' => $success['success'],
             'message' => $message,
         ]);
         } catch (\Throwable $e){
 
             $success = false;
             $message = 'Error: ' . $e->getMessage();
+            $response_time =   null ;
 
         }
-
+         $url = $server->url ?? 'N/A';
         // Log for debugging
 
-
+       
         // Send result to a Blade view
-        return view('server', compact('url', 'success', 'message'));
+        return view('test-page', compact( 'url', 'response_time', 'message' ));
     }
 }

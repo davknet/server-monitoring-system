@@ -24,6 +24,7 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::get('/server-tests', [DemoController::class, 'serverTests'])->name('server-tests');
+Route::get('/test-page', [DemoController::class, 'testing'])->name('test-page');
 
 Route::get('/login', [App\Http\Controllers\AuthController::class, 'showLogin'])
     ->middleware('guest')
