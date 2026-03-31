@@ -13,6 +13,9 @@ use App\Health\Abs\AbstractConnector;
  */
 class HttPSConnector extends AbstractConnector
 {
+
+ 
+
     private string $url;
 
     /**
@@ -33,43 +36,40 @@ class HttPSConnector extends AbstractConnector
      *
      * @return bool True if connection successful, false otherwise
      */
-    protected function tryConnect(): bool
+     protected function tryConnect(): bool
     {
-        $options = [
-            "http" => [
-                "method"  => "GET",
-                "timeout" => $this->timeout,
-                "header"  => "User-Agent: ServerMonitor/1.0\r\n",
-                "ignore_errors" => true
-            ],
-            "ssl" => [
-                "verify_peer"      => true,
-                "verify_peer_name" => true,
-            ]
-        ];
+        $start = microtime(true);
 
-        $context = stream_context_create($options);
+        $ch = curl_init();
 
-        $result = file_get_contents($this->url, false, $context);
+        curl_setopt_array($ch, [
+            CURLOPT_URL => $this->url,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_TIMEOUT => $this->timeout,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_SSL_VERIFYPEER => false,
+            CURLOPT_SSL_VERIFYHOST => false,
+            CURLOPT_USERAGENT => 'ServerMonitor/1.0',
+        ]);
+
+        $result = curl_exec($ch);
+
+        $this->responseTime = round((microtime(true) - $start) * 1000, 3);
 
         if ($result === false) {
-            $this->errorMessage = "Failed to connect to {$this->url} via HTTPS";
+            $this->errorMessage = curl_error($ch);
+            curl_close($ch);
             return false;
         }
 
-        
-        if (isset($http_response_header)) {
-            $statusLine = $http_response_header[0] ?? '';
+        $statusCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        curl_close($ch);
 
-            if (preg_match('/HTTP\/\d\.\d\s+(\d+)/', $statusLine, $matches)) {
-                $statusCode = (int)$matches[1];
-
-                if ($statusCode < 200 || $statusCode >= 300) {
-                    $this->errorMessage = "Unexpected response: {$statusLine}";
-                    return false;
-                }
-            }
+        if ($statusCode < 200 || $statusCode >= 300 || $statusCode >= 500){
+            $this->errorMessage = "HTTP status: {$statusCode}";
+            return false;
         }
+
 
         return true;
     }

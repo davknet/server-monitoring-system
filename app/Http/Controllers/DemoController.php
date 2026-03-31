@@ -53,31 +53,27 @@ class DemoController extends Controller
 
     public function testing(){
 
-        $success = false;
-         $server = Server::with('protocol')->where('protocol_id', 3)->first();
+         $success = false;
+         $server = Server::with('protocol')->where('protocol_id', 1 )->first();
 
         try {
-            $connector = FactoryConnectorFactory::create($server);
-            $success = $connector->connect();
-            $message = !empty($success) && $success['error_message'] === '' ? $success['error_message'] : 'Connection failed';
+
+            $connector     = new HTTPConnector($server->url)  ;
+            $success       = $connector->connect();
+            $message       = is_array($success) && $success['error_message'] === '' ? $success['error_message'] :   'Connection failed';
             $response_time = $success['response_time'] ?? null ;
 
-              Log::info('HTTP Test Result', [
-            'url'     => $server->url ?? 'N/A',
-            'success' => $success['success'],
-            'message' => $message,
-        ]);
-        } catch (\Throwable $e){
+        }catch(\Throwable $e){
 
-            $success = false;
-            $message = 'Error: ' . $e->getMessage();
+            $success       = false;
+            $message       = 'Error: ' . $e->getMessage();
             $response_time =   null ;
 
         }
          $url = $server->url ?? 'N/A';
         // Log for debugging
 
-       
+
         // Send result to a Blade view
         return view('test-page', compact( 'url', 'response_time', 'message' ));
     }

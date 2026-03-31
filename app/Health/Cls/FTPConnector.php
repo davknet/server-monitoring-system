@@ -48,7 +48,7 @@ class FTPConnector extends AbstractConnector
      */
     public function __construct(string $host, string $user = 'anonymous', string $pass = '', int $port = 21)
     {
-        parent::__construct($host, $port);
+        parent::__construct( $host , $port );
         $this->user = $user;
         $this->pass = $pass;
     }
@@ -64,7 +64,7 @@ class FTPConnector extends AbstractConnector
      */
     protected function tryConnect(): bool
     {
-        $conn = @ftp_connect($this->host, $this->port, 45 );
+        $conn = @ftp_connect($this->host , $this->port, 45 );
 
         if (!$conn) {
             $this->errorMessage = "Unable to connect to FTP server {$this->host}:{$this->port}";

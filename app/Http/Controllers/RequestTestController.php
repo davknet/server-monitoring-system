@@ -24,14 +24,14 @@ class RequestTestController extends Controller
             try {
 
                 $connector = FactoryConnectorFactory::create($server);
-                Log::info("conector -> ", ['conector' => $connector]);
+
                 // connect() returns an array with 'success' and 'response_time'
                 $result = $connector->connect();
 
 
 
                 $success = $result['success'] ?? false;
-                $responseTime = $result['response_time'] ?? null; // capture response time
+                $responseTime = $result['response_time'] || $connector->response_time ?? null; // capture response time
                 $message = $result['error_message'] ?? null;
 
                 $status = $success ? 'healthy' : 'not healthy';

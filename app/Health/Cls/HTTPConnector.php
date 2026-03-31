@@ -2,6 +2,7 @@
 namespace App\Health\Cls;
 
 use App\Health\Abs\AbstractConnector;
+use Illuminate\Support\Facades\Log;
 
 /**
  * Class HTTPConnector
@@ -21,7 +22,7 @@ class HTTPConnector extends AbstractConnector
      * @var string The full URL to connect to.
      */
     private string $url;
-    
+
     /**
      * HTTPConnector constructor.
      *
@@ -41,38 +42,54 @@ class HTTPConnector extends AbstractConnector
      *
      * @return bool True if connection is successful, false otherwise.
      */
-    protected function tryConnect(): bool
-    {
-        $options = [
-            "http" => [
-                "method"  => "GET",
-                "timeout" => $this->timeout,
-                "ignore_errors" => true
-            ]
-        ];
 
-        $context = stream_context_create($options);
 
-        $result = file_get_contents($this->url, false, $context);
+         protected function tryConnect(): bool
+        {
+            $start = microtime(true);
 
-        if ($result === false) {
-            $this->errorMessage = "HTTP request failed for {$this->url}";
-            return false;
-        }
+            $ch = curl_init();
 
-        if (isset($http_response_header)) {
-            $statusLine = $http_response_header[0] ?? '';
+            curl_setopt_array($ch, [
+                CURLOPT_URL => $this->url,
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_TIMEOUT => $this->timeout,
+                CURLOPT_FOLLOWLOCATION => true,
+                CURLOPT_SSL_VERIFYPEER => false,
+                CURLOPT_SSL_VERIFYHOST => false,
+                CURLOPT_USERAGENT => 'ServerMonitor/1.0',
+            ]);
 
-            if (preg_match('/HTTP\/\d\.\d\s+(\d+)/', $statusLine, $matches)) {
-                $statusCode = (int)$matches[1];
+            $result = curl_exec($ch);
 
-                if ($statusCode < 200 || $statusCode >= 300) {
-                    $this->errorMessage = "Unexpected response: {$statusLine}";
-                    return false;
-                }
+            $this->responseTime = round((microtime(true) - $start) * 1000, 3);
+
+            if ($result === false) {
+
+                $this->errorMessage = curl_error($ch);
+                Log::error("HTTP connection failed", [
+                    'url'              => $this->url,
+                    'error'            => $this->errorMessage,
+                    'response_time_ms' => $this->responseTime,
+                ]);
+
+                return false;
             }
-        }
 
-        return true;
-    }
+            $statusCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+
+            Log::info('HTTP DEBUG', [
+                'url' => $this->url,
+                'status_code' => $statusCode,
+                'response_time' => $this->responseTime,
+                'error_message' => $this->errorMessage,
+            ]);
+
+            if ($statusCode >= 500) {
+                $this->errorMessage = "Server error: {$statusCode}";
+                return false;
+            }
+
+            return true;
+        }
 }

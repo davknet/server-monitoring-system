@@ -1,5 +1,8 @@
 <?php
 namespace App\Health\Abs;
+
+use App\Health\Cls\HTTPConnector;
+use App\Health\Cls\HttPSConnector;
 use App\Health\Intr\ConnectorInterface;
 
 /**
@@ -15,6 +18,8 @@ use App\Health\Intr\ConnectorInterface;
  */
 abstract class AbstractConnector implements ConnectorInterface
 {
+
+
     /**
      * @var string The host or URL to connect to.
      */
@@ -24,6 +29,9 @@ abstract class AbstractConnector implements ConnectorInterface
         * @var int Connection timeout in seconds. Default is 45 seconds.
         */
     protected int $timeout = 45;
+
+
+    protected float $responseTime = 0.0;
 
     /**
      * @var int The port number for the connection.
@@ -59,11 +67,15 @@ abstract class AbstractConnector implements ConnectorInterface
 
             $responseTime = round(microtime(true) - $start, 3);
 
+            if( get_class($this) === HTTPConnector::class || get_class($this) === HttPSConnector::class )
+            {
+                 $responseTime = $this->responseTime ;
+            }
 
             $success = $success && $responseTime < 45;
 
 
-         
+
             return [
                 'success'       => $success,
                 'response_time' => $responseTime,
