@@ -4,6 +4,28 @@
 
 @section('content')
 <h1 class="text-3xl font-bold mb-6">Server  Checks Every Minute </h1>
+<form action="{{ route('servers.search') }}" method="GET" class="mb-6 flex flex-col md:flex-row gap-2">
+
+    <input type="text"
+           name="query"
+           placeholder="Search by ID, Name, IP, Port, Method..."
+           value="{{ request('query') }}"
+           class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-400">
+
+    <button type="submit"
+            class="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 transition">
+        Search
+    </button>
+
+    <a href="{{ route('update-server') }}"
+       class="bg-gray-400 text-white px-4 py-2 rounded-lg hover:bg-gray-500 transition text-center">
+        Reset
+    </a>
+
+</form>
+<div class="">
+    <p class="text-gray-600 mb-4"> server tests</p>
+</div>
 
 <div class="overflow-x-auto">
     <table class="min-w-full border border-gray-300 rounded-lg shadow-md" id="servers-table">

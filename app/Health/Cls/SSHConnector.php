@@ -2,6 +2,7 @@
 namespace App\Health\Cls;
 
 use App\Health\Abs\AbstractConnector;
+use Illuminate\Support\Facades\Log;
 
 /**
  * Class SSHConnector
@@ -40,7 +41,7 @@ class SSHConnector extends AbstractConnector
      *
      * @return bool
      */
-    protected function tryConnect(): bool
+     protected function tryConnect(): bool
     {
         $start = microtime(true);
 
@@ -49,14 +50,13 @@ class SSHConnector extends AbstractConnector
             return false;
         }
 
-        // Open a TCP socket with a 45-second timeout
-        $socket = @fsockopen($this->host, $this->port, $errno, $errstr, 45);
+        // Open TCP socket without enforcing a timeout
+        $socket = @fsockopen($this->host, $this->port, $errno, $errstr);
         if (!$socket) {
             $this->errorMessage = "Unable to connect to {$this->host}:{$this->port} ($errstr)";
             return false;
         }
 
-        // Pass the socket to ssh2_connect
         $conn = @ssh2_connect($this->host, $this->port, [], ['socket' => $socket]);
         if (!$conn) {
             fclose($socket);
@@ -71,6 +71,16 @@ class SSHConnector extends AbstractConnector
         }
 
         fclose($socket);
+
+        // Measure connection time in seconds
+        $this->responseTime = round(microtime(true) - $start, 2);
+
+        Log::info('SSH connection', [
+            'host' => $this->host,
+            'port' => $this->port,
+            'user' => $this->user,
+            'response_time' => $this->responseTime,
+        ]);
 
         return true;
     }

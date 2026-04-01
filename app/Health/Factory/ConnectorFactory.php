@@ -42,6 +42,8 @@ use App\Models\Server;
  */
 class ConnectorFactory
 {
+
+    public static float $response_time = 0.0;
     /**
      * Create a connector instance based on server configuration.
      *
@@ -62,6 +64,7 @@ class ConnectorFactory
    public static function create(Server $server): ConnectorInterface
 {
     $protocol = strtoupper($server->protocol->name ?? '');
+    self::$response_time = $server->response_time ?? 0.0 ;
 
     // Log::info("Creating connector", [
     //     'protocol' => $protocol,

@@ -31,7 +31,7 @@ class RequestTestController extends Controller
 
 
                 $success = $result['success'] ?? false;
-                $responseTime = $result['response_time'] || $connector->response_time ?? null; // capture response time
+                $responseTime = $result['response_time'] || FactoryConnectorFactory::$response_time ?? null; // capture response time
                 $message = $result['error_message'] ?? null;
 
                 $status = $success ? 'healthy' : 'not healthy';

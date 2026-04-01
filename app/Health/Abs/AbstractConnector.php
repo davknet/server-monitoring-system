@@ -4,6 +4,7 @@ namespace App\Health\Abs;
 use App\Health\Cls\HTTPConnector;
 use App\Health\Cls\HttPSConnector;
 use App\Health\Intr\ConnectorInterface;
+use Illuminate\Support\Facades\Log;
 
 /**
  * Class AbstractConnector
@@ -28,7 +29,7 @@ abstract class AbstractConnector implements ConnectorInterface
         /**
         * @var int Connection timeout in seconds. Default is 45 seconds.
         */
-    protected int $timeout = 45;
+    protected int $timeout = 100 ;
 
 
     protected float $responseTime = 0.0;
@@ -58,40 +59,39 @@ abstract class AbstractConnector implements ConnectorInterface
      *
      * @return bool True if the connection was successful, false otherwise.
      */
-    public function connect(): array
-    {
-        try {
-            $start = microtime(true);
+   public function connect(): array
+{
+    try {
+        $start = microtime(true);
 
-            $success = $this->tryConnect();
+        $success = $this->tryConnect();
 
-            $responseTime = round(microtime(true) - $start, 3);
+        // Measure response time in **seconds**
+        $this->responseTime = round(microtime(true) - $start, 2); // 2 decimal seconds
 
-            if( get_class($this) === HTTPConnector::class || get_class($this) === HttPSConnector::class )
-            {
-                 $responseTime = $this->responseTime ;
-            }
+        // Log connection
+        Log::info('Connection attempt', [
+            'host' => $this->host,
+            'port' => $this->port,
+            'success' => $success,
+            'response_time' => $this->responseTime,
+            'error_message' => $this->errorMessage,
+        ]);
 
-            $success = $success && $responseTime < 45;
+        return [
+            'success'       => $success,
+            'response_time' => $this->responseTime,
+            'error_message' => $this->errorMessage ?? null,
+        ];
 
-
-
-            return [
-                'success'       => $success,
-                'response_time' => $responseTime,
-                'error_message' => $this->errorMessage ?? null,
-            ];
-
-
-
-        }catch(\Exception $e){
-            return [
-                'success' => false,
-                'response_time' => null,
-                'error_message' => $e->getMessage(),
-            ];
-        }
+    } catch (\Exception $e) {
+        return [
+            'success' => false,
+            'response_time' => null,
+            'error_message' => $e->getMessage(),
+        ];
     }
+}
 
     /**
      * Protocol-specific connection logic.

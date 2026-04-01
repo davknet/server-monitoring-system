@@ -44,52 +44,48 @@ class HTTPConnector extends AbstractConnector
      */
 
 
-         protected function tryConnect(): bool
-        {
-            $start = microtime(true);
+     protected function tryConnect(): bool
+    {
+        $start = microtime(true);
 
-            $ch = curl_init();
+        $ch = curl_init();
 
-            curl_setopt_array($ch, [
-                CURLOPT_URL => $this->url,
-                CURLOPT_RETURNTRANSFER => true,
-                CURLOPT_TIMEOUT => $this->timeout,
-                CURLOPT_FOLLOWLOCATION => true,
-                CURLOPT_SSL_VERIFYPEER => false,
-                CURLOPT_SSL_VERIFYHOST => false,
-                CURLOPT_USERAGENT => 'ServerMonitor/1.0',
-            ]);
+        curl_setopt_array($ch, [
+            CURLOPT_URL => $this->url,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_SSL_VERIFYPEER => false,
+            CURLOPT_SSL_VERIFYHOST => false,
+            CURLOPT_USERAGENT => 'ServerMonitor/1.0',
+            // No timeout applied, just measure how long it takes
+        ]);
 
-            $result = curl_exec($ch);
+        $result = curl_exec($ch);
 
-            $this->responseTime = round((microtime(true) - $start) * 1000, 3);
+        // Measure response time in **seconds** with 2 decimals
+        $this->responseTime = round(microtime(true) - $start, 2);
 
-            if ($result === false) {
-
-                $this->errorMessage = curl_error($ch);
-                Log::error("HTTP connection failed", [
-                    'url'              => $this->url,
-                    'error'            => $this->errorMessage,
-                    'response_time_ms' => $this->responseTime,
-                ]);
-
-                return false;
-            }
-
-            $statusCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-
-            Log::info('HTTP DEBUG', [
+        if ($result === false) {
+            $this->errorMessage = curl_error($ch);
+            Log::error("HTTP connection failed", [
                 'url' => $this->url,
-                'status_code' => $statusCode,
+                'error' => $this->errorMessage,
                 'response_time' => $this->responseTime,
-                'error_message' => $this->errorMessage,
             ]);
-
-            if ($statusCode >= 500){
-                $this->errorMessage = "Server error: {$statusCode}";
-                return false;
-            }
-
-            return true;
+            curl_close($ch);
+            return false;
         }
+
+        $statusCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        curl_close($ch);
+
+        Log::info('HTTP connection', [
+            'url' => $this->url,
+            'status_code' => $statusCode,
+            'response_time' => $this->responseTime,
+        ]);
+
+        
+        return true;
+    }
 }
