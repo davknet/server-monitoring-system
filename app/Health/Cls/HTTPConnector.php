@@ -85,7 +85,7 @@ class HTTPConnector extends AbstractConnector
                 'error_message' => $this->errorMessage,
             ]);
 
-            if ($statusCode >= 500) {
+            if ($statusCode >= 500){
                 $this->errorMessage = "Server error: {$statusCode}";
                 return false;
             }

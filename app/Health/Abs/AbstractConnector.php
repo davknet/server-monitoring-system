@@ -58,7 +58,7 @@ abstract class AbstractConnector implements ConnectorInterface
      *
      * @return bool True if the connection was successful, false otherwise.
      */
-        public function connect(): array
+    public function connect(): array
     {
         try {
             $start = microtime(true);
@@ -109,7 +109,7 @@ abstract class AbstractConnector implements ConnectorInterface
      */
     protected ?string $errorMessage = null;
 
-        public function getErrorMessage(): ?string
+    public function getErrorMessage(): ?string
     {
         return $this->errorMessage;
     }

@@ -7,12 +7,13 @@ use App\Health\Cls\HTTPConnector;
 use App\Health\Cls\HTTPSConnector;
 use App\Health\Cls\FTPConnector;
 use App\Health\Cls\SSHConnector;
+use App\Health\Factory\Decision;
 use App\Health\Factory\HealthCheckFactory;
 use App\Models\RequestTestModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
-class Homecontroller extends Controller
+class HomeController extends Controller
 {
    public function index()
     {
@@ -20,7 +21,7 @@ class Homecontroller extends Controller
     }
 
 
-        public function serverTests(Request $request)
+    public function serverTests(Request $request)
     {
         $tests = RequestTestModel::with('server')
             ->orderBy('created_at', 'desc')
@@ -37,7 +38,7 @@ class Homecontroller extends Controller
             ];
         });
 
-        
+
 
         return response()->json([
             'data'         => $tests->items(),
@@ -46,5 +47,15 @@ class Homecontroller extends Controller
             'per_page'     => $tests->perPage(),
             'total'        => $tests->total(),
         ]);
+    }
+
+
+
+
+    public function doDecision()
+    {
+        $result = Decision::makeDecision();
+        
+         return view('home');
     }
 }
