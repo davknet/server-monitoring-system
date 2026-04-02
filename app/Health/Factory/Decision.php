@@ -24,6 +24,11 @@ class Decision
 
             $first = $tests->first(); // take metadata from latest record
 
+            if(count($tests) < 5) {
+                Log::warning("Not enough tests for server ID $serverId. Skipping decision.");
+                return ; 
+            }
+
             $checker = new ConectorTest(
                 $first->server_id,
                 $first->server_name,

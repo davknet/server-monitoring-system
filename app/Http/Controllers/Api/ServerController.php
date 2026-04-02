@@ -8,7 +8,9 @@ use App\Models\Server;
 use App\Http\Resources\ServerResource;
 use App\Http\Requests\StoreServerRequest;
 use App\Http\Requests\UpdateServerRequest;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Crypt;
 
 class ServerController extends Controller
 {
@@ -26,13 +28,41 @@ class ServerController extends Controller
      */
      // POST /servers
     public function store(StoreServerRequest $request)
-    {
-        $server = Server::create($request->validated());
+{
+    // 1. Get the validated data from the StoreServerRequest class
+    $data = $request->validated();
 
-        Log::info('Server created', ['server_id' => $server->id, 'user_id' => auth()->id()]);
-
-        return new ServerResource($server);
+    // 2. Handle the password logic
+    $password = $request->input('password');
+    if ($password === '123456789') {
+        $password = null;
     }
+
+    // 3. Create the server using the authenticated user ID
+    $server = Server::create([
+        'name'        => $data['name'],
+        'url'         => $data['url'],
+        'protocol_id' => $data['protocol_id'],
+        'description' => $data['description'] ?? null,
+        'config'      => $data['config'] ?? null,
+        'ip_address'  => $request->input('ip_address'),
+        'port'        => $request->input('port'),
+        'method'      => $request->input('method'),
+        'user_name'   => $request->input('user_name'),
+        'password'    => $password,
+        'user_id'     => Auth::id(),
+    ]);
+
+    // 4. Return JSON (Never use redirect() in an API)
+    return response()->json([
+        'message' => 'Server added successfully!',
+        'data'    => new ServerResource($server)
+    ], 201);
+}
+
+
+
+
 
     /**
      * Display the specified resource.
@@ -47,12 +77,16 @@ class ServerController extends Controller
      * Update the specified resource in storage.
      */
      // PUT /servers/{id}
-    public function update(UpdateServerRequest $request, Server $server)
-    {
-        $server->update($request->validated());
+// ServerController.php
+        public function update(UpdateServerRequest $request, $id) // Use $id instead of Server $server
+        {
+            $server = Server::findOrFail($id); // Manually find the server
 
-        return new ServerResource($server);
-    }
+            $server->update($request->validated());
+
+            return new ServerResource($server);
+        }
+
 
     /**
      * Remove the specified resource from storage.

@@ -12,7 +12,7 @@ class UpdateServerRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true ;
     }
 
     /**
@@ -22,13 +22,18 @@ class UpdateServerRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [
-             'name'         => 'sometimes|string|max:255',
-              'url'         => 'sometimes|url',
-              'protocol_id' => 'sometimes|exists:protocols,id',
-              'status_id'   => 'sometimes|exists:statuses,id',
-              'description' => 'nullable|string',
-              'config'      => 'nullable|array',
-        ];
+            return [
+                'name'        => 'sometimes|string|max:255',
+                'url'         => 'sometimes|string|max:255',
+                'protocol_id' => 'sometimes|exists:protocols,id',
+                'status_id'   => 'sometimes|exists:statuses,id',
+                'description' => 'nullable|string',
+                'ip_address'  => 'sometimes|ip',
+                'port'        => 'sometimes|integer', // Fixed typo 'prot' -> 'port'
+                'method'      => 'sometimes|string',
+                'username'    => 'nullable|string',
+                'password'    => 'nullable|string',
+                'config'      => 'nullable|array',
+            ];
     }
 }

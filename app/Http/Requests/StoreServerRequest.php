@@ -12,7 +12,7 @@ class StoreServerRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true ;
     }
 
     /**
@@ -25,9 +25,8 @@ class StoreServerRequest extends FormRequest
         return [
 
         'name'        => 'required|string|max:255',
-        'url'         => 'required|url',
+        'url'         => 'required|string|max:255',
         'protocol_id' => 'required|exists:protocols,id',
-        'status_id'   => 'required|exists:statuses,id',
         'description' => 'nullable|string',
         'config'      => 'nullable|array',
 
